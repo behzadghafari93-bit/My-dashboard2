@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>داشبورد مدیریت یکپارچه | Hideaway • طلای غفاری • Nuance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * { font-family: 'Vazirmatn', sans-serif; box-sizing: border-box; }
+    body { background-color: #f8fafc; color: #0f172a; margin: 0; }
+    @media print {
+      body * { visibility: hidden; }
+      #printable-invoice, #printable-invoice * { visibility: visible; }
+      #printable-invoice {
+        position: fixed; left: 0; top: 0; width: 100%;
+        background: white !important; padding: 24px !important; z-index: 99999;
+      }
+      .no-print { display: none !important; }
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    // ==========================================
+    // 1. تنظیمات فضاهای کاری (Workspaces)
+    // ==========================================
+    const WORKSPACES = {
+      all: {
+        id: 'all',
+        name: 'نمای تجمیعی کل',
+        subtitle: 'گزارش یکپارچه تمام کسب‌وکارها و زندگی شخصی',
+        primary: '#0f172a',
+        accent: '#f59e0b',
+        badgeBg: 'bg-slate-900 text-amber-400',
+        headerBg: 'bg-slate-900',
+        categories: {
+          income: ['فروش کافه', 'فروش طلا', 'درآمد آنلاین‌شاپ', 'سایر درآمدها'],
+          expense: ['خرید مواد اولیه', 'خرید طلا/آبشده', 'هزینه جاری', 'قبوض', 'سایر هزینه‌ها']
+        }
+      },
+      hideaway: {
+        id: 'hideaway',
+        name: 'Hideaway',
+        subtitle: 'مدیریت مالی، بار، ایونت‌ها و کارهای کافه Hideaway',
+        primary: '#2f4456',
+        accent: '#d4af37',
+        badgeBg: 'bg-[#2f4456] text-[#f3e5ab]',
+        headerBg: 'bg-[#2f4456]',
+        categories: {
+          income: ['فروش POS کافه', 'فروش نقدی', 'درآمد ورکشاپ و ایونت', 'سفارش بیرون‌بر / اسنپ‌فود', 'سایر درآمدهای کافه'],
+          expense: ['خرید دانه قهوه و بار سرد/گرم', 'خرید کیک و شیرینی', 'حقوق باریستا و پرسنل', 'اجاره و شارژ کافه', 'تبلیغات و تولید محتوا', 'تعمیرات و تجهیزات']
+        }
+      },
+      ghaffari_gold: {
+        id: 'ghaffari_gold',
+        name: 'طلای غفاری',
+        subtitle: 'حسابداری مغازه طلای غفاری، نرخ تابلو و دفتر مشتریان',
+        primary: '#78350f',
+        accent: '#f59e0b',
+        badgeBg: 'bg-amber-900 text-amber-200',
+        headerBg: 'bg-gradient-to-l from-amber-950 via-amber-900 to-stone-900',
+        categories: {
+          income: ['فروش طلای زینتی', 'فروش سکه و آبشده', 'دریافت اجرت و سود', 'سایر درآمدهای مغازه'],
+          expense: ['خرید طلای آبشده / بنکداری', 'خرید سکه', 'اجرت ساخت کارگاه', 'حقوق و کمیسیون فروشنده', 'امنیت، بیمه و اجاره مغازه']
+        }
+      },
+      nuance: {
+        id: 'nuance',
+        name: 'Nuance',
+        subtitle: 'مدیریت فروش آنلاین، بسته‌بندی و مشتریان Nuance',
+        primary: '#4c0519',
+        accent: '#e2b857',
+        badgeBg: 'bg-[#4c0519] text-[#f5d076]',
+        headerBg: 'bg-[#4c0519]',
+        categories: {
+          income: ['فروش آنلاین سایت/اینستاگرام', 'سفارش اختصاصی مشتری', 'تسویه درگاه پرداخت', 'سایر درآمدهای Nuance'],
+          expense: ['تأمین طلا و متریال', 'چاپ و بسته‌بندی لوکس (زرشکی/طلاکوب)', 'تبلیغات اینستاگرام و عکاسی', 'ارسال پستی و پیک بیمه', 'کارمزد درگاه و مالیات']
+        }
+      },
+      home: {
+        id: 'home',
+        name: 'کارهای خانه',
+        subtitle: 'مدیریت مخارج منزل، خریدهای خانه و کارهای روزمره',
+        primary: '#065f46',
+        accent: '#34d399',
+        badgeBg: 'bg-emerald-900 text-emerald-200',
+        headerBg: 'bg-emerald-900',
+        categories: {
+          income: ['بودجه واریزی منزل', 'سایر واریزی‌های خانه'],
+          expense: ['خرید سوپرمارکت و میوه', 'پروتئین و مواد غذایی', 'لوازم و تعمیرات منزل', 'شارژ ساختمان و نظافت', 'خرید برای منزل']
+        }
+      },
+      personal: {
+        id: 'personal',
+        name: 'کارهای شخصی',
+        subtitle: 'حسابداری شخصی، قبوض، اقساط، اهداف و برنامه‌ریزی فردی',
+        primary: '#312e81',
+        accent: '#a5b4fc',
+        badgeBg: 'bg-indigo-950 text-indigo-200',
+        headerBg: 'bg-indigo-950',
+        categories: {
+          income: ['برداشت سود از کسب‌وکار', 'سایر درآمدهای شخصی'],
+          expense: [
+            'قبض آب',
+            'قبض برق',
+            'قبض گاز',
+            'قبض تلفن همراه',
+            'قبض اینترنت',
+            'پوشاک و خرید شخصی',
+            'ورزش و سلامت',
+            'تفریح، سینما و کتاب',
+            'حمل‌ونقل و خودرو',
+            'سایر هزینه‌های شخصی'
+          ]
+        }
+      }
+    };
+
+    const STORAGE_KEY = 'behzad_personal_dashboard_v6';
+
+    // داده‌های اولیه نمونه برای شروع راحت
+    const DEFAULT_STATE = {
+      activeWorkspace: 'all',
+      activeTab: 'overview',
+      showRatesBar: true,
+      rates: {
+        gold18: 4650000,
+        melted: 20150000,
+        coinFull: 52800000,
+        coinHalf: 27900000,
+        coinQuarter: 17600000,
+        coinGram: 8400000,
+        usd: 69500,
+        eur: 75200,
+        try: 2040,
+        updatedAt: '۱۴۰۵/۰۸/۲۳ - ۱۷:۰۰'
+      },
+      accounts: [
+        { id: 'acc1', workspace: 'hideaway', name: 'کارت POS کافه Hideaway', bank: 'ملت', balance: 48500000 },
+        { id: 'acc2', workspace: 'ghaffari_gold', name: 'حساب جاری طلای غفاری', bank: 'تجارت', balance: 320000000 },
+        { id: 'acc3', workspace: 'nuance', name: 'حساب درگاه Nuance', bank: 'سامان', balance: 85000000 },
+        { id: 'acc4', workspace: 'home', name: 'کارت هزینه‌های خانه', bank: 'ملی', balance: 18500000 },
+        { id: 'acc5', workspace: 'personal', name: 'حساب شخصی بهزاد', bank: 'پاسارگاد', balance: 64000000 }
+      ],
+      transactions: [
+        { id: 't1', workspace: 'hideaway', type: 'income', amount: 14200000, category: 'فروش POS کافه', accountId: 'acc1', date: '1405/08/23', note: 'فروش روزانه کافه' },
+        { id: 't2', workspace: 'hideaway', type: 'expense', amount: 4600000, category: 'خرید دانه قهوه و بار سرد/گرم', accountId: 'acc1', date: '1405/08/22', note: 'خرید ۵ کیلو دانه اسپرسو' },
+        { id: 't3', workspace: 'ghaffari_gold', type: 'income', amount: 68500000, category: 'فروش طلای زینتی', accountId: 'acc2', date: '1405/08/23', note: 'فروش دستبند ۱۸ عیار' },
+        { id: 't4', workspace: 'nuance', type: 'expense', amount: 7200000, category: 'چاپ و بسته‌بندی لوکس (زرشکی/طلاکوب)', accountId: 'acc3', date: '1405/08/21', note: 'سفارش پاکت فاکتور و کارت تشکر زرشکی طلاکوب' },
+        { id: 't5', workspace: 'personal', type: 'expense', amount: 680000, category: 'قبض اینترنت', accountId: 'acc5', date: '1405/08/20', note: 'تمدید بسته اینترنت ماهانه' }
+      ],
+      debts: [
+        { id: 'd1', workspace: 'hideaway', kind: 'installment', title: 'قسط دستگاه اسپرسوساز', person: 'شرکت تجهیزات قهوه', amount: 12500000, dueDate: '1405/09/01', status: 'pending' },
+        { id: 'd2', workspace: 'ghaffari_gold', kind: 'receivable', title: 'مانده حساب خرید سکه', person: 'آقای رضایی', amount: 25000000, dueDate: '1405/08/28', status: 'pending' },
+        { id: 'd3', workspace: 'personal', kind: 'installment', title: 'قسط وام بانکی', person: 'بانک پاسارگاد', amount: 8400000, dueDate: '1405/09/05', status: 'pending' }
+      ],
+      tasks: [
+        { id: 'tk1', workspace: 'hideaway', title: 'هماهنگی ورکشاپ آخر هفته در Hideaway', priority: 'urgent', dueDate: '1405/08/25', done: false },
+        { id: 'tk2', workspace: 'nuance', title: 'تحویل نمونه چاپ زرشکی و طلاکوب بسته‌بندی Nuance', priority: 'important', dueDate: '1405/08/24', done: false },
+        { id: 'tk3', workspace: 'ghaffari_gold', title: 'موجودی‌گیری ویترین و به‌روزرسانی نرخ تابلو', priority: 'urgent', dueDate: '1405/08/23', done: true },
+        { id: 'tk4', workspace: 'personal', title: 'پرداخت قبوض برق و تلفن همراه', priority: 'normal', dueDate: '1405/08/26', done: false }
+      ],
+      goals: [
+        { id: 'g1', workspace: 'hideaway', title: 'خرید آسیاب قهوه صنعتی جدید', target: 90000000, current: 54000000, unit: 'تومان', deadline: '1405/11/30' },
+        { id: 'g2', workspace: 'ghaffari_gold', title: 'افزایش ذخیره آبشده مغازه به ۵۰۰ گرم', target: 500, current: 320, unit: 'گرم', deadline: '1405/12/29' },
+        { id: 'g3', workspace: 'nuance', title: 'رسیدن به ۱۰۰ سفارش ماهانه آنلاین‌شاپ', target: 100, current: 64, unit: 'سفارش', deadline: '1405/10/30' }
+      ],
+      customers: [
+        {
+          id: 'c1',
+          workspace: 'ghaffari_gold',
+          name: 'سارا محمدی',
+          phone: '09123456789',
+          nationalId: '3871234567',
+          address: 'تهران، سعادت‌آباد',
+          deals: [
+            { id: 'dl1', date: '1405/08/20', type: 'sell', item: 'گردنبند ۱۸ عیار', weight: 8.45, purity: '750', rate: 4650000, wagePercent: 12, totalAmount: 44011800, paidAmount: 40000000, note: '۴ میلیون مانده تا شنبه' }
+          ]
+        },
+        {
+          id: 'c2',
+          workspace: 'nuance',
+          name: 'نگین کریمی',
+          phone: '09351112233',
+          nationalId: '',
+          address: 'همدان، بلوار ارم',
+          deals: [
+            { id: 'dl2', date: '1405/08/22', type: 'sell', item: 'انگشتر مینیمال Nuance', weight: 3.2, purity: '750', rate: 4650000, wagePercent: 15, totalAmount: 17112000, paidAmount: 17112000, note: 'ارسال با پست پیشتاز و بسته‌بندی ویژه' }
+          ]
+        }
+      ]
+    };
+
+    let state = loadState();
+    let modal = null; // { type, data }
+    let selectedCustomerId = null;
+    let invoiceModalData = null;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
+        return { ...JSON.parse(JSON.stringify(DEFAULT_STATE)), ...JSON.parse(raw) };
+      } catch (e) {
+        return JSON.parse(JSON.stringify(DEFAULT_STATE));
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+      render();
+    }
+
+    function formatNum(n) {
+      return Number(n || 0).toLocaleString('fa-IR');
+    }
+
+    function uid(prefix = 'id') {
+      return prefix + '_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+    }
+
+    function todayJalali() {
+      try {
+        return new Date().toLocaleDateString('fa-IR');
+      } catch {
+        return '1405/08/23';
+      }
+    }
+
+    function filterByWorkspace(list) {
+      if (state.activeWorkspace === 'all') return list;
+      return list.filter(x => x.workspace === state.activeWorkspace);
+    }
+
+    function getWorkspaceInfo(wsId) {
+      return WORKSPACES[wsId] || WORKSPACES.all;
+    }
+
+    // ==========================================
+    // عملیات‌ها (Actions)
+    // ==========================================
+    function setWorkspace(ws) {
+      state.activeWorkspace = ws;
+      if (state.activeTab === 'customers' && ws !== 'ghaffari_gold' && ws !== 'nuance') {
+        state.activeTab = 'overview';
+      }
+      selectedCustomerId = null;
+      saveState();
+    }
+
+    function setTab(tab) {
+      state.activeTab = tab;
+      selectedCustomerId = null;
+      saveState();
+    }
+
+    function openModal(type, data = null) {
+      modal = { type, data };
+      render();
+    }
+
+    function closeModal() {
+      modal = null;
+      render();
+    }
+
+    // خروجی پشتیبان JSON و بازیابی
+    function exportBackup() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+      const a = document.createElement('a');
+      a.href = dataStr;
+      a.download = `dashboard-backup-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+    }
+
+    function importBackup(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (parsed && parsed.accounts) {
+            state = parsed;
+            saveState();
+            alert('فایل پشتیبان با موفقیت بازیابی شد!');
+          }
+        } catch {
+          alert('فایل انتخاب‌شده معتبر نیست.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // باز کردن پیش‌نمایش فاکتور PDF
+    function openWorkspaceInvoice() {
+      const ws = getWorkspaceInfo(state.activeWorkspace);
+      const txs = filterByWorkspace(state.transactions);
+      const accs = filterByWorkspace(state.accounts);
+      const totalIncome = txs.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount), 0);
+      const totalExpense = txs.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount), 0);
+      const totalBalance = accs.reduce((s, a) => s + Number(a.balance), 0);
+
+      invoiceModalData = {
+        title: `صورت‌حساب و گزارش مالی ${ws.name}`,
+        subtitle: ws.subtitle,
+        docNumber: 'INV-' + Math.floor(100000 + Math.random() * 900000),
+        date: todayJalali(),
+        customerName: null,
+        rows: txs.map(t => ({
+          date: t.date,
+          desc: `${t.category}${t.note ? ' - ' + t.note : ''}`,
+          type: t.type === 'income' ? 'درآمد / واریز' : t.type === 'expense' ? 'هزینه / برداشت' : 'انتقال وجه',
+          amount: t.amount
+        })),
+        summary: [
+          { label: 'جمع درآمدها', value: formatNum(totalIncome) + ' تومان' },
+          { label: 'جمع هزینه‌ها', value: formatNum(totalExpense) + ' تومان' },
+          { label: 'تراز دوره', value: formatNum(totalIncome - totalExpense) + ' تومان' },
+          { label: 'موجودی کل حساب‌ها', value: formatNum(totalBalance) + ' تومان' }
+        ]
+      };
+      render();
+    }
+
+    function openCustomerInvoice(customer) {
+      const ws = getWorkspaceInfo(customer.workspace);
+      const deals = customer.deals || [];
+      let totalBuy = 0;
+      let totalPaid = 0;
+      deals.forEach(d => {
+        totalBuy += Number(d.totalAmount || 0);
+        totalPaid += Number(d.paidAmount || 0);
+      });
+
+      invoiceModalData = {
+        title: `فاکتور رسمی معاملات طلا - ${ws.name}`,
+        subtitle: `مشتری: ${customer.name} | تلفن: ${customer.phone || '-'}`,
+        docNumber: 'GLD-' + Math.floor(100000 + Math.random() * 900000),
+        date: todayJalali(),
+        customer: customer,
+        rows: deals.map(d => ({
+          date: d.date,
+          desc: `${d.type === 'sell' ? 'فروش' : 'خرید'}: ${d.item} (${d.weight} گرم | عیار ${d.purity} | اجرت ${d.wagePercent}%)`,
+          type: `فی: ${formatNum(d.rate)}`,
+          amount: d.totalAmount
+        })),
+        summary: [
+          { label: 'جمع کل فاکتور', value: formatNum(totalBuy) + ' تومان' },
+          { label: 'مبلغ پرداخت‌شده', value: formatNum(totalPaid) + ' تومان' },
+          { label: 'مانده حساب مشتری', value: formatNum(totalBuy - totalPaid) + ' تومان' }
+        ]
+      };
+      render();
+    }
+
+    // ==========================================
+    // رندر بخش‌های رابط کاربری
+    // ==========================================
+    function renderRatesBar() {
+      if (state.activeWorkspace !== 'ghaffari_gold') return '';
+      const r = state.rates;
+      const items = [
+        { label: 'طلای ۱۸ عیار (گرم)', val: r.gold18, color: 'text-amber-600' },
+        { label: 'مثقال آبشده', val: r.melted, color: 'text-amber-700' },
+        { label: 'تمام سکه', val: r.coinFull, color: 'text-yellow-700' },
+        { label: 'نیم سکه', val: r.coinHalf, color: 'text-yellow-700' },
+        { label: 'ربع سکه', val: r.coinQuarter, color: 'text-yellow-700' },
+        { label: 'سکه یک گرمی', val: r.coinGram, color: 'text-yellow-700' },
+        { label: 'دلار آمریکا', val: r.usd, color: 'text-emerald-700' },
+        { label: 'یورو اروپا', val: r.eur, color: 'text-blue-700' },
+        { label: 'لیر ترکیه', val: r.try, color: 'text-rose-700' }
+      ];
+
+      return `
+        <div class="bg-amber-50/90 border border-amber-200 rounded-2xl p-3.5 mb-5 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+              <h3 class="font-bold text-amber-950 text-sm">نرخ دستی تابلو طلای غفاری</h3>
+              <span class="text-xs text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">آخرین ثبت: ${r.updatedAt}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="openModal('editRates')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-lg font-medium transition">
+                ✏️ ویرایش نرخ‌ها
+              </button>
+              <button onclick="state.showRatesBar = !state.showRatesBar; saveState();" class="text-xs bg-white border border-amber-300 text-amber-900 px-2.5 py-1.5 rounded-lg">
+                ${state.showRatesBar ? 'بستن' : 'نمایش'}
+              </button>
+            </div>
+          </div>
+          ${state.showRatesBar ? `
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+              ${items.map(it => `
+                <div onclick="openModal('editRates')" class="cursor-pointer bg-white hover:bg-amber-100/60 border border-amber-200/80 rounded-xl px-3 py-2 flex flex-col justify-between transition">
+                  <span class="text-[11px] text-slate-500">${it.label}</span>
+                  <span class="font-bold text-sm ${it.color} mt-0.5">${formatNum(it.val)} <span class="text-[10px] font-normal text-slate-400">تومان</span></span>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function renderOverview(ws) {
+      const accs = filterByWorkspace(state.accounts);
+      const txs = filterByWorkspace(state.transactions);
+      const debts = filterByWorkspace(state.debts).filter(d => d.status === 'pending');
+      const tasks = filterByWorkspace(state.tasks).filter(t => !t.done);
+      const goals = filterByWorkspace(state.goals);
+
+      const totalBalance = accs.reduce((s, a) => s + Number(a.balance), 0);
+      const totalIncome = txs.filter(t => t.type === 'income').reduce((s, t) => s + Number(t.amount), 0);
+      const totalExpense = txs.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount), 0);
+
+      return `
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="text-xs text-slate-500 mb-1">موجودی کل حساب‌ها</div>
+            <div class="text-xl font-extrabold text-slate-900">${formatNum(totalBalance)} <span class="text-xs font-normal text-slate-400">تومان</span></div>
+            <div class="text-[11px] text-emerald-600 mt-2">${accs.length} حساب / صندوق فعال</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="text-xs text-slate-500 mb-1">مجموع درآمدها</div>
+            <div class="text-xl font-extrabold text-emerald-600">${formatNum(totalIncome)} <span class="text-xs font-normal text-slate-400">تومان</span></div>
+            <div class="text-[11px] text-slate-400 mt-2">ثبت‌شده در این بخش</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="text-xs text-slate-500 mb-1">مجموع هزینه‌ها</div>
+            <div class="text-xl font-extrabold text-rose-600">${formatNum(totalExpense)} <span class="text-xs font-normal text-slate-400">تومان</span></div>
+            <div class="text-[11px] text-slate-400 mt-2">تراز: ${formatNum(totalIncome - totalExpense)} تومان</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="text-xs text-slate-500 mb-1">کارهای باز و تعهدات</div>
+            <div class="text-xl font-extrabold text-amber-600">${tasks.length} کار <span class="text-sm text-slate-400">/</span> ${debts.length} قسط و چک</div>
+            <div class="text-[11px] text-slate-400 mt-2">${goals.length} هدف فعال در حال پیگیری</div>
+          </div>
+        </div>
+
+        ${state.activeWorkspace === 'all' ? `
+          <div class="mb-6">
+            <h3 class="font-bold text-slate-800 mb-3 text-sm">ورود سریع به فضاهای کاری اختصاصی</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+              ${['hideaway', 'ghaffari_gold', 'nuance', 'home', 'personal'].map(id => {
+                const item = WORKSPACES[id];
+                const wsAccs = state.accounts.filter(a => a.workspace === id);
+                const wsBal = wsAccs.reduce((s, a) => s + Number(a.balance), 0);
+                const wsTasks = state.tasks.filter(t => t.workspace === id && !t.done).length;
+                return `
+                  <div onclick="setWorkspace('${id}')" class="cursor-pointer bg-white hover:shadow-md border border-slate-200 rounded-2xl p-4 transition flex flex-col justify-between">
+                    <div>
+                      <span class="inline-block text-xs font-bold px-2.5 py-1 rounded-lg ${item.badgeBg} mb-2">${item.name}</span>
+                      <div class="text-xs text-slate-500 line-clamp-1">${item.subtitle}</div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                      <span class="font-bold text-slate-800">${formatNum(wsBal)} ت</span>
+                      <span class="text-amber-600 font-medium">${wsTasks} کار باز</span>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-bold text-slate-800 text-sm">آخرین تراکنش‌ها</h3>
+              <button onclick="openModal('addTransaction')" class="text-xs bg-slate-900 text-white px-3 py-1.5 rounded-lg">+ تراکنش جدید</button>
+            </div>
+            ${txs.length === 0 ? '<p class="text-xs text-slate-400 py-6 text-center">هنوز تراکنشی ثبت نشده است.</p>' : `
+              <div class="space-y-2">
+                ${txs.slice(0, 6).map(t => `
+                  <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs">
+                    <div>
+                      <div class="font-bold text-slate-800">${t.category}</div>
+                      <div class="text-[11px] text-slate-400">${t.date} ${t.note ? '• ' + t.note : ''}</div>
+                    </div>
+                    <div class="font-bold ${t.type === 'income' ? 'text-emerald-600' : t.type === 'expense' ? 'text-rose-600' : 'text-blue-600'}">
+                      ${t.type === 'income' ? '+' : t.type === 'expense' ? '-' : '⇄'} ${formatNum(t.amount)} ت
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          </div>
+
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-bold text-slate-800 text-sm">کارهای در دست انجام</h3>
+              <button onclick="openModal('addTask')" class="text-xs bg-slate-900 text-white px-3 py-1.5 rounded-lg">+ کار جدید</button>
+            </div>
+            ${tasks.length === 0 ? '<p class="text-xs text-slate-400 py-6 text-center">تمام کارها انجام شده‌اند!</p>' : `
+              <div class="space-y-2">
+                ${tasks.slice(0, 6).map(tk => `
+                  <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" onchange="toggleTask('${tk.id}')" ${tk.done ? 'checked' : ''} class="rounded text-amber-600" />
+                      <span class="font-medium text-slate-800">${tk.title}</span>
+                    </label>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full ${tk.priority === 'urgent' ? 'bg-rose-100 text-rose-700' : tk.priority === 'important' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-700'}">
+                      ${tk.priority === 'urgent' ? 'فوری' : tk.priority === 'important' ? 'مهم' : 'عادی'}
+                    </span>
+                  </div>
+                `).join('')}
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAccounting() {
+      const accs = filterByWorkspace(state.accounts);
+      const txs = filterByWorkspace(state.transactions);
+
+      return `
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold text-slate-800 text-sm">حساب‌ها و صندوق‌ها</h3>
+            <button onclick="openModal('addAccount')" class="text-xs bg-slate-900 text-white px-3 py-1.5 rounded-lg">+ افزودن حساب / کارت</button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            ${accs.map(a => `
+              <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex items-center justify-between">
+                <div>
+                  <div class="text-xs text-slate-400">${a.bank || 'صندوق'} • ${getWorkspaceInfo(a.workspace).name}</div>
+                  <div class="font-bold text-slate-800 text-sm mt-0.5">${a.name}</div>
+                  <div class="text-base font-extrabold text-emerald-700 mt-2">${formatNum(a.balance)} <span class="text-xs font-normal">تومان</span></div>
+                </div>
+                <button onclick="deleteItem('accounts', '${a.id}')" class="text-xs text-rose-500 hover:bg-rose-50 p-2 rounded-lg" title="حذف">🗑️</button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <h3 class="font-bold text-slate-800 text-sm">دفتر روزنامه درآمد و هزینه</h3>
+            <div class="flex gap-2">
+              <button onclick="openModal('addTransaction')" class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl font-medium">+ ثبت درآمد / هزینه / انتقال</button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-right text-xs">
+              <thead>
+                <tr class="border-b border-slate-200 text-slate-500">
+                  <th class="py-2.5 px-2">تاریخ</th>
+                  <th class="py-2.5 px-2">بخش</th>
+                  <th class="py-2.5 px-2">دسته‌بندی</th>
+                  <th class="py-2.5 px-2">توضیحات</th>
+                  <th class="py-2.5 px-2">مبلغ (تومان)</th>
+                  <th class="py-2.5 px-2">عملیات</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${txs.map(t => `
+                  <tr class="border-b border-slate-100 hover:bg-slate-50">
+                    <td class="py-2.5 px-2 text-slate-500">${t.date}</td>
+                    <td class="py-2.5 px-2"><span class="px-2 py-0.5 rounded-md text-[10px] ${getWorkspaceInfo(t.workspace).badgeBg}">${getWorkspaceInfo(t.workspace).name}</span></td>
+                    <td class="py-2.5 px-2 font-bold text-slate-800">${t.category}</td>
+                    <td class="py-2.5 px-2 text-slate-500">${t.note || '-'}</td>
+                    <td class="py-2.5 px-2 font-bold ${t.type === 'income' ? 'text-emerald-600' : t.type === 'expense' ? 'text-rose-600' : 'text-blue-600'}">
+                      ${t.type === 'income' ? '+' : t.type === 'expense' ? '-' : '⇄'} ${formatNum(t.amount)}
+                    </td>
+                    <td class="py-2.5 px-2">
+                      <button onclick="deleteItem('transactions', '${t.id}')" class="text-rose-500 hover:underline">حذف</button>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDebts() {
+      const items = filterByWorkspace(state.debts);
+      return `
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-slate-800 text-sm">مدیریت اقساط، چک‌ها، بدهی و طلب‌ها</h3>
+            <button onclick="openModal('addDebt')" class="text-xs bg-slate-900 text-white px-3.5 py-2 rounded-xl">+ ثبت قسط / چک / بدهی</button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            ${items.map(d => `
+              <div class="border ${d.status === 'paid' ? 'border-emerald-200 bg-emerald-50/40' : 'border-slate-200 bg-white'} rounded-2xl p-4 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${d.kind === 'receivable' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'}">
+                      ${d.kind === 'installment' ? 'قسط' : d.kind === 'check' ? 'چک' : d.kind === 'receivable' ? 'طلب' : 'بدهی'}
+                    </span>
+                    <span class="text-xs text-slate-400">سررسید: ${d.dueDate}</span>
+                  </div>
+                  <div class="font-bold text-slate-900 text-sm mt-2">${d.title}</div>
+                  <div class="text-xs text-slate-500 mt-0.5">طرف حساب: ${d.person || '-'} • ${getWorkspaceInfo(d.workspace).name}</div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <span class="font-extrabold text-sm text-slate-900">${formatNum(d.amount)} تومان</span>
+                  <div class="flex items-center gap-2">
+                    ${d.status === 'pending' ? `
+                      <button onclick="settleDebt('${d.id}')" class="text-xs bg-emerald-600 text-white px-3 py-1 rounded-lg hover:bg-emerald-700">✓ تسویه شد</button>
+                    ` : `<span class="text-xs text-emerald-700 font-bold">تسویه‌شده</span>`}
+                    <button onclick="deleteItem('debts', '${d.id}')" class="text-xs text-rose-500 px-1.5">حذف</button>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderTasks() {
+      const tasks = filterByWorkspace(state.tasks);
+      return `
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-slate-800 text-sm">لیست کارها و برنامه‌ریزی (To-Do)</h3>
+            <button onclick="openModal('addTask')" class="text-xs bg-slate-900 text-white px-3.5 py-2 rounded-xl">+ افزودن کار جدید</button>
+          </div>
+          <div class="space-y-2.5">
+            ${tasks.map(tk => `
+              <div class="flex items-center justify-between p-3 rounded-xl border ${tk.done ? 'bg-slate-50 border-slate-100 opacity-60' : 'bg-white border-slate-200'}">
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input type="checkbox" onchange="toggleTask('${tk.id}')" ${tk.done ? 'checked' : ''} class="w-4 h-4 rounded text-amber-600" />
+                  <div>
+                    <div class="text-sm font-bold ${tk.done ? 'line-through text-slate-400' : 'text-slate-800'}">${tk.title}</div>
+                    <div class="text-[11px] text-slate-400">${getWorkspaceInfo(tk.workspace).name} • سررسید: ${tk.dueDate || 'بدون تاریخ'}</div>
+                  </div>
+                </label>
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] px-2.5 py-0.5 rounded-full ${tk.priority === 'urgent' ? 'bg-rose-100 text-rose-700' : tk.priority === 'important' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'}">
+                    ${tk.priority === 'urgent' ? 'فوری' : tk.priority === 'important' ? 'مهم' : 'عادی'}
+                  </span>
+                  <button onclick="deleteItem('tasks', '${tk.id}')" class="text-xs text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg">حذف</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderGoals() {
+      const goals = filterByWorkspace(state.goals);
+      return `
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-slate-800 text-sm">اهداف و برنامه‌های زمان‌بندی‌شده</h3>
+              <p class="text-xs text-slate-400">تعیین هدف مالی، وزنی یا عددی با تاریخ سررسید و ثبت پیشرفت</p>
+            </div>
+            <button onclick="openModal('addGoal')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white px-3.5 py-2 rounded-xl font-medium">+ تعریف هدف جدید</button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${goals.map(g => {
+              const pct = Math.min(100, Math.round((Number(g.current) / Math.max(1, Number(g.target))) * 100));
+              return `
+                <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50/50">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-md ${getWorkspaceInfo(g.workspace).badgeBg}">${getWorkspaceInfo(g.workspace).name}</span>
+                    <span class="text-xs text-slate-500">مهلت: ${g.deadline}</span>
+                  </div>
+                  <div class="font-bold text-slate-900 text-sm mt-2">${g.title}</div>
+                  <div class="flex items-center justify-between text-xs text-slate-600 mt-3 mb-1.5">
+                    <span>پیشرفت: <b>${formatNum(g.current)}</b> از <b>${formatNum(g.target)}</b> ${g.unit}</span>
+                    <span class="font-extrabold text-amber-700">${pct}%</span>
+                  </div>
+                  <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-amber-500 rounded-full transition-all" style="width: ${pct}%"></div>
+                  </div>
+                  <div class="mt-3 pt-3 border-t border-slate-200/70 flex items-center justify-between">
+                    <button onclick="openModal('progressGoal', '${g.id}')" class="text-xs bg-slate-900 text-white px-3 py-1.5 rounded-lg">+ ثبت پیشرفت</button>
+                    <button onclick="deleteItem('goals', '${g.id}')" class="text-xs text-rose-500">حذف</button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCustomers() {
+      const custs = state.customers.filter(c => c.workspace === state.activeWorkspace);
+      const selected = custs.find(c => c.id === selectedCustomerId) || custs[0];
+
+      return `
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-bold text-slate-800 text-sm">لیست مشتریان (${custs.length})</h3>
+              <button onclick="openModal('addCustomer')" class="text-xs bg-slate-900 text-white px-3 py-1.5 rounded-lg">+ مشتری جدید</button>
+            </div>
+            <div class="space-y-2">
+              ${custs.length === 0 ? '<p class="text-xs text-slate-400 text-center py-6">هنوز مشتری ثبت نشده است.</p>' : custs.map(c => {
+                const isSel = selected && selected.id === c.id;
+                const totalBuy = (c.deals || []).reduce((s, d) => s + Number(d.totalAmount || 0), 0);
+                const totalPaid = (c.deals || []).reduce((s, d) => s + Number(d.paidAmount || 0), 0);
+                const rem = totalBuy - totalPaid;
+                return `
+                  <div onclick="selectedCustomerId = '${c.id}'; render();" class="cursor-pointer p-3 rounded-xl border transition ${isSel ? 'border-amber-500 bg-amber-50/60' : 'border-slate-200 hover:bg-slate-50'}">
+                    <div class="flex items-center justify-between">
+                      <span class="font-bold text-sm text-slate-900">${c.name}</span>
+                      <span class="text-[11px] text-slate-500">${c.phone || ''}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] mt-2">
+                      <span class="text-slate-500">${(c.deals || []).length} معامله</span>
+                      <span class="font-bold ${rem > 0 ? 'text-rose-600' : 'text-emerald-600'}">
+                        ${rem > 0 ? 'مانده: ' + formatNum(rem) + ' ت' : 'تسویه کامل'}
+                      </span>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <div class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+            ${!selected ? '<p class="text-xs text-slate-400 text-center py-12">یک مشتری را انتخاب کنید یا مشتری جدید بسازید.</p>' : `
+              <div class="flex flex-wrap items-start justify-between gap-3 pb-4 border-b border-slate-200">
+                <div>
+                  <h3 class="font-extrabold text-base text-slate-900">${selected.name}</h3>
+                  <div class="text-xs text-slate-500 mt-1">
+                    تلفن: ${selected.phone || '-'} | کد ملی: ${selected.nationalId || '-'} | آدرس: ${selected.address || '-'}
+                  </div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <button onclick="openModal('addDeal', '${selected.id}')" class="text-xs bg-amber-600 hover:bg-amber-700 text-white px-3 py-2 rounded-xl font-medium">+ ثبت معامله طلا</button>
+                  <button onclick="openCustomerInvoice(state.customers.find(x => x.id === '${selected.id}'))" class="text-xs bg-slate-900 text-white px-3 py-2 rounded-xl">📄 فاکتور PDF مشتری</button>
+                  <button onclick="deleteCustomer('${selected.id}')" class="text-xs bg-rose-50 text-rose-600 px-2.5 py-2 rounded-xl">حذف</button>
+                </div>
+              </div>
+
+              <div class="mt-4 overflow-x-auto">
+                <table class="w-full text-right text-xs">
+                  <thead>
+                    <tr class="border-b border-slate-200 text-slate-500">
+                      <th class="py-2 px-2">تاریخ</th>
+                      <th class="py-2 px-2">شرح کالا</th>
+                      <th class="py-2 px-2">وزن / عیار</th>
+                      <th class="py-2 px-2">نرخ پایه</th>
+                      <th class="py-2 px-2">مبلغ کل</th>
+                      <th class="py-2 px-2">پرداختی</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${(selected.deals || []).map(d => `
+                      <tr class="border-b border-slate-100">
+                        <td class="py-2.5 px-2 text-slate-500">${d.date}</td>
+                        <td class="py-2.5 px-2 font-bold text-slate-800">${d.type === 'sell' ? 'فروش:' : 'خرید:'} ${d.item}</td>
+                        <td class="py-2.5 px-2">${d.weight} گرم (${d.purity})</td>
+                        <td class="py-2.5 px-2">${formatNum(d.rate)}</td>
+                        <td class="py-2.5 px-2 font-bold text-slate-900">${formatNum(d.totalAmount)} ت</td>
+                        <td class="py-2.5 px-2 text-emerald-700 font-bold">${formatNum(d.paidAmount)} ت</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            `}
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // مودال‌ها و فرم‌های ثبت اطلاعات
+    // ==========================================
+    function renderModal() {
+      if (!modal) return '';
+      const ws = getWorkspaceInfo(state.activeWorkspace);
+      const currentWs = state.activeWorkspace === 'all' ? 'personal' : state.activeWorkspace;
+
+      if (modal.type === 'editRates') {
+        const r = state.rates;
+        return `
+          <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-xl">
+              <h3 class="font-bold text-base text-slate-900 mb-3">ویرایش دستی نرخ تابلو طلای غفاری</h3>
+              <form onsubmit="submitRates(event)" class="grid grid-cols-2 gap-3 text-xs">
+                <div><label class="block text-slate-500 mb-1">طلای ۱۸ عیار (گرم)</label><input name="gold18" type="number" value="${r.gold18}" class="w-full border rounded-xl p-2" required /></div>
+                <div><label class="block text-slate-500 mb-1">مثقال آبشده</label><input name="melted" type="number" value="${r.melted}" class="w-full border rounded-xl p-2" required /></div>
+                <div><label class="block text-slate-500 mb-1">تمام سکه</label><input name="coinFull" type="number" value="${r.coinFull}" class="w-full border rounded-xl p-2" required /></div>
+                <div><label class="block text-slate-500 mb-1">نیم سکه</label><input name="coinHalf" type="number" value="${r.coinHalf}" class="w-full border rounded-xl p-2" required /></div>
+                <div><label class="block text-slate-500 mb-1">ربع سکه</label><input name="coinQuarter" type="number" value="${r.coinQuarter}" class="w-full border rounded-xl p-2" required /></div>
+                <div><label class="block text-slate-500 mb-1">سکه یک گرمی</label><input name="coinGram" type="number" value="${r.coinGram}" class="w-full border rounded-xl p-2" required /></div>
+                <div><label class="block text-slate-500 mb-1">دلار آمریکا</label><input name="usd" type="number" value="${r.usd}" class="w-full border rounded-xl p-2" required /></div>
+                <div><label class="block text-slate-500 mb-1">یورو اروپا</label><input name="eur" type="number" value="${r.eur}" class="w-full border rounded-xl p-2" required /></div>
+                <div class="col-span-2"><label class="block text-slate-500 mb-1">لیر ترکیه</label><input name="try" type="number" value="${r.try}" class="w-full border rounded-xl p-2" required /></div>
+                <div class="col-span-2 flex justify-end gap-2 mt-2">
+                  <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl border text-slate-600">انصراف</button>
+                  <button type="submit" class="px-4 py-2 rounded-xl bg-amber-600 text-white font-bold">ذخیره نرخ‌ها</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+      }
+
+      if (modal.type === 'addTransaction') {
+        const cats = [...ws.categories.income, ...ws.categories.expense];
+        return `
+          <div class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl">
+              <h3 class="font-bold text-base mb-3">ثبت تراکنش مالی جدید</h3>
+              <form onsubmit="submitTransaction(event)" class="space-y-3 text-xs">
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block text-slate-500 mb-1">فضای کاری</label>
+                    <select name="workspace" class="w-full border rounded-xl p-2">
+                      ${['hideaway', 'ghaffari_gold', 'nuance', 'home', 'personal'].map(id => `<option value="${id}" ${id === currentWs ? 'selected' : ''}>${WORKSPACES[id].name}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-slate-500 mb-1">نوع تراکنش</label>
+                    <select name="type" class="w-full border rounded-xl p-2">
+                      <option value="expense">هزینه / برداشت (-)</option>
+                      <option value="income">درآمد / واریز (+)</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-slate-500 mb-1">دسته‌بندی</label>
+                  <select name="category" class="w-full border rounded-xl p-2">
+                    ${cats.map(c => `<option value="${c}">${c}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block text-slate-500 mb-1">مبلغ (تومان)</label>
+                    <input name="amount" type="number" required class="w-full border rounded-xl p-2" placeholder="مثلا: 1500000" />
+                  </div>
+                  <div>
+                    <label class="block text-slate-500 mb-1">حساب / صندوق</label>
+                    <select name="accountId" class="w-full border rounded-xl p-2">
+                      ${state.accounts.map(a => `<option value="${a.id}">${a.name}</option>`).join('')}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-slate-500 mb-1">تاریخ</label>
+                  <input name="date" type="text" value="${todayJalali()}" class="w-full border rounded-xl p-2" />
+                </div>
+                <div>
+                  <label class="block text-slate-500 mb-1">توضیحات</label>
+                  <input name="note" type="text" class="w-full border rounded-xl p-2" placeholder="شرح کوتاه تراکنش..." />
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                  <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl border">انصراف</button>
+                  <button type="submit" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold">ثبت تراکنش</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+      }
+
+      if (modal.type === 'addAccount') {
+        return `
+          <div class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl">
+              <h3 class="font-bold text-base mb-3">افزودن حساب بانکی یا صندوق</h3>
+              <form onsubmit="submitAccount(event)" class="space-y-3 text-xs">
+                <div>
+                  <label class="block text-slate-500 mb-1">فضای کاری</label>
+                  <select name="workspace" class="w-full border rounded-xl p-2">
+                    ${['hideaway', 'ghaffari_gold', 'nuance', 'home', 'personal'].map(id => `<option value="${id}" ${id === currentWs ? 'selected' : ''}>${WORKSPACES[id].name}</option>`).join('')}
+                  </select>
+                </div>
+                <div><label class="block text-slate-500 mb-1">عنوان حساب / صندوق</label><input name="name" required class="w-full border rounded-xl p-2" placeholder="مثلاً: کارت بانکی ملت" /></div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div><label class="block text-slate-500 mb-1">نام بانک</label><input name="bank" class="w-full border rounded-xl p-2" placeholder="ملت / سامان / نقد" /></div>
+                  <div><label class="block text-slate-500 mb-1">موجودی اولیه (تومان)</label><input name="balance" type="number" value="0" class="w-full border rounded-xl p-2" /></div>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                  <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl border">انصراف</button>
+                  <button type="submit" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold">ذخیره حساب</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+      }
+
+      if (modal.type === 'addDebt') {
+        return `
+          <div class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl">
+              <h3 class="font-bold text-base mb-3">ثبت قسط، چک، بدهی یا طلب</h3>
+              <form onsubmit="submitDebt(event)" class="space-y-3 text-xs">
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block text-slate-500 mb-1">فضای کاری</label>
+                    <select name="workspace" class="w-full border rounded-xl p-2">
+                      ${['hideaway', 'ghaffari_gold', 'nuance', 'home', 'personal'].map(id => `<option value="${id}" ${id === currentWs ? 'selected' : ''}>${WORKSPACES[id].name}</option>`).join('')}
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-slate-500 mb-1">نوع</label>
+                    <select name="kind" class="w-full border rounded-xl p-2">
+                      <option value="installment">قسط</option>
+                      <option value="check">چک</option>
+                      <option value="debt">بدهی</option>
+                      <option value="receivable">طلب</option>
+                    </select>
+                  </div>
+                </div>
+                <div><label class="block text-slate-500 mb-1">عنوان</label><input name="title" required class="w-full border rounded-xl p-2" /></div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div><label class="block text-slate-500 mb-1">طرف حساب</label><input name="person" class="w-full border rounded-xl p-2" /></div>
+                  <div><label class="block text-slate-500 mb-1">مبلغ (تومان)</label><input name="amount" type="number" required class="w-full border rounded-xl p-2" /></div>
+                </div>
+                <div><label class="block text-slate-500 mb-1">تاریخ سررسید</label><input name="dueDate" value="${todayJalali()}" class="w-full border rounded-xl p-2" /></div>
+                <div class="flex justify-end gap-2 pt-2">
+                  <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl border">انصراف</button>
+                  <button type="submit" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold">ثبت</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+      }
+
+      if (modal.type === 'addTask') {
+        return `
+          <div class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl">
+              <h3 class="font-bold text-base mb-3">افزودن کار جدید</h3>
+              <form onsubmit="submitTask(event)" class="space-y-3 text-xs">
+                <div>
+                  <label class="block text-slate-500 mb-1">فضای کاری</label>
+                  <select name="workspace" class="w-full border rounded-xl p-2">
+                    ${['hideaway', 'ghaffari_gold', 'nuance', 'home', 'personal'].map(id => `<option value="${id}" ${id === currentWs ? 'selected' : ''}>${WORKSPACES[id].name}</option>`).join('')}
+                  </select>
+                </div>
+                <div><label class="block text-slate-500 mb-1">عنوان کار</label><input name="title" required class="w-full border rounded-xl p-2" /></div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block text-slate-500 mb-1">اولویت</label>
+                    <select name="priority" class="w-full border rounded-xl p-2">
+                      <option value="urgent">فوری</option>
+                      <option value="important" selected>مهم</option>
+                      <option value="normal">عادی</option>
+                    </select>
+                  </div>
+                  <div><label class="block text-slate-500 mb-1">تاریخ انجام</label><input name="dueDate" value="${todayJalali()}" class="w-full border rounded-xl p-2" /></div>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                  <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl border">انصراف</button>
+                  <button type="submit" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold">ذخیره کار</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+      }
+
+      if (modal.type === 'addGoal') {
+        return `
+          <div class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl">
+              <h3 class="font-bold text-base mb-3">تعریف هدف زمان‌بندی‌شده جدید</h3>
+              <form onsubmit="submitGoal(event)" class="space-y-3 text-xs">
+                <div>
+                  <label class="block text-slate-500 mb-1">فضای کاری</label>
+                  <select name="workspace" class="w-full border rounded-xl p-2">
+                    ${['hideaway', 'ghaffari_gold', 'nuance', 'home', 'personal'].map(id => `<option value="${id}" ${id === currentWs ? 'selected' : ''}>${WORKSPACES[id].name}</option>`).join('')}
+                  </select>
+                </div>
+                <div><label class="block text-slate-500 mb-1">عنوان هدف</label><input name="title" required class="w-full border rounded-xl p-2" placeholder="مثلاً: پس‌انداز خرید تجهیزات یا افزایش وزن طلا" /></div>
+                <div class="grid grid-cols-3 gap-2">
+                  <div><label class="block text-slate-500 mb-1">مقدار هدف</label><input name="target" type="number" required class="w-full border rounded-xl p-2" /></div>
+                  <div><label class="block text-slate-500 mb-1">مقدار فعلی</label><input name="current" type="number" value="0" class="w-full border rounded-xl p-2" /></div>
+                  <div><label class="block text-slate-500 mb-1">واحد</label><input name="unit" value="تومان" class="w-full border rounded-xl p-2" /></div>
+                </div>
+                <div><label class="block text-slate-500 mb-1">تاریخ سررسید هدف</label><input name="deadline" value="1405/12/29" class="w-full border rounded-xl p-2" /></div>
+                <div class="flex justify-end gap-2 pt-2">
+                  <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl border">انصراف</button>
+                  <button type="submit" class="px-4 py-2 rounded-xl bg-amber-600 text-white font-bold">ذخیره هدف</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+      }
+
+      if (modal.type === 'progressGoal') {
+        const g = state.goals.find(x => x.id === modal.data);
+        return `
+          <div class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl">
+              <h3 class="font-bold text-sm mb-2">ثبت پیشرفت برای: ${g.title}</h3>
+              <form onsubmit="submitGoalProgress(event, '${g.id}')" class="space-y-3 text-xs">
+                <div>
+                  <label class="block text-slate-500 mb-1">مقدار جدید اضافه شود (${g.unit})</label>
+                  <input name="delta" type="number" required class="w-full border rounded-xl p-2" placeholder="مثلاً: 5000000" />
+                </div>
+                <div class="flex justify-end gap-2">
+                  <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl border">انصراف</button>
+                  <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 text-white font-bold">افزودن پیشرفت</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+      }
+
+      if (modal.type === 'addCustomer') {
+        return `
+          <div class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl">
+              <h3 class="font-bold text-base mb-3">ثبت مشتری جدید (${ws.name})</h3>
+              <form onsubmit="submitCustomer(event)" class="space-y-3 text-xs">
+                <div><label class="block text-slate-500 mb-1">نام و نام خانوادگی</label><input name="name" required class="w-full border rounded-xl p-2" /></div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div><label class="block text-slate-500 mb-1">شماره تماس</label><input name="phone" class="w-full border rounded-xl p-2" /></div>
+                  <div><label class="block text-slate-500 mb-1">کد ملی</label><input name="nationalId" class="w-full border rounded-xl p-2" /></div>
+                </div>
+                <div><label class="block text-slate-500 mb-1">آدرس</label><input name="address" class="w-full border rounded-xl p-2" /></div>
+                <div class="flex justify-end gap-2 pt-2">
+                  <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl border">انصراف</button>
+                  <button type="submit" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold">ذخیره مشتری</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+      }
+
+      if (modal.type === 'addDeal') {
+        return `
+          <div class="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl">
+              <h3 class="font-bold text-base mb-3">ثبت معامله طلا در پرونده مشتری</h3>
+              <form onsubmit="submitDeal(event, '${modal.data}')" class="space-y-3 text-xs">
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <label class="block text-slate-500 mb-1">نوع معامله</label>
+                    <select name="type" class="w-full border rounded-xl p-2">
+                      <option value="sell">فروش به مشتری</option>
+                      <option value="buy">خرید از مشتری</option>
+                    </select>
+                  </div>
+                  <div><label class="block text-slate-500 mb-1">تاریخ</label><input name="date" value="${todayJalali()}" class="w-full border rounded-xl p-2" /></div>
+                </div>
+                <div><label class="block text-slate-500 mb-1">نام کالا / قطعه طلا</label><input name="item" required class="w-full border rounded-xl p-2" placeholder="مثلاً: دستبند زنجیری ۱۸ عیار" /></div>
+                <div class="grid grid-cols-3 gap-2">
+                  <div><label class="block text-slate-500 mb-1">وزن (گرم)</label><input name="weight" type="number" step="0.01" required class="w-full border rounded-xl p-2" /></div>
+                  <div><label class="block text-slate-500 mb-1">عیار</label><input name="purity" value="750" class="w-full border rounded-xl p-2" /></div>
+                  <div><label class="block text-slate-500 mb-1">اجرت (%)</label><input name="wagePercent" type="number" value="10" class="w-full border rounded-xl p-2" /></div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <div><label class="block text-slate-500 mb-1">نرخ هر گرم (تومان)</label><input name="rate" type="number" value="${state.rates.gold18}" required class="w-full border rounded-xl p-2" /></div>
+                  <div><label class="block text-slate-500 mb-1">مبلغ پرداختی (تومان)</label><input name="paidAmount" type="number" required class="w-full border rounded-xl p-2" /></div>
+                </div>
+                <div><label class="block text-slate-500 mb-1">توضیحات</label><input name="note" class="w-full border rounded-xl p-2" /></div>
+                <div class="flex justify-end gap-2 pt-2">
+                  <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl border">انصراف</button>
+                  <button type="submit" class="px-4 py-2 rounded-xl bg-amber-600 text-white font-bold">ثبت معامله</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        `;
+      }
+      return '';
+    }
+
+    function renderInvoiceModal() {
+      if (!invoiceModalData) return '';
+      const inv = invoiceModalData;
+      return `
+        <div class="fixed inset-0 bg-slate-900/70 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-2xl">
+            <div class="no-print flex items-center justify-between pb-3 mb-4 border-b">
+              <span class="text-xs font-bold text-slate-500">پیش‌نمایش فاکتور و صورت‌حساب رسمی</span>
+              <div class="flex gap-2">
+                <button onclick="window.print()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-4 py-2 rounded-xl">🖨️ چاپ / ذخیره فایل PDF</button>
+                <button onclick="invoiceModalData = null; render();" class="bg-slate-200 text-slate-700 text-xs px-3 py-2 rounded-xl">بستن</button>
+              </div>
+            </div>
+
+            <div id="printable-invoice" class="border-2 border-slate-800 rounded-xl p-6">
+              <div class="flex items-start justify-between border-b-2 border-slate-800 pb-4 mb-4">
+                <div>
+                  <h2 class="text-lg font-extrabold text-slate-900">${inv.title}</h2>
+                  <p class="text-xs text-slate-600 mt-1">${inv.subtitle}</p>
+                </div>
+                <div class="text-left text-xs space-y-1">
+                  <div>شماره سند: <b>${inv.docNumber}</b></div>
+                  <div>تاریخ صدور: <b>${inv.date}</b></div>
+                </div>
+              </div>
+
+              <table class="w-full text-right text-xs border-collapse mb-6">
+                <thead>
+                  <tr class="bg-slate-100 border-y border-slate-400">
+                    <th class="py-2 px-2">ردیف</th>
+                    <th class="py-2 px-2">تاریخ</th>
+                    <th class="py-2 px-2">شرح تراکنش / کالا</th>
+                    <th class="py-2 px-2">نوع / فی</th>
+                    <th class="py-2 px-2">مبلغ (تومان)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${inv.rows.map((r, i) => `
+                    <tr class="border-b border-slate-200">
+                      <td class="py-2 px-2">${i + 1}</td>
+                      <td class="py-2 px-2">${r.date}</td>
+                      <td class="py-2 px-2 font-medium">${r.desc}</td>
+                      <td class="py-2 px-2 text-slate-600">${r.type}</td>
+                      <td class="py-2 px-2 font-bold">${formatNum(r.amount)}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-300 mb-8 text-xs">
+                ${inv.summary.map(s => `
+                  <div>
+                    <div class="text-slate-500">${s.label}</div>
+                    <div class="font-extrabold text-slate-900 mt-0.5">${s.value}</div>
+                  </div>
+                `).join('')}
+              </div>
+
+              <div class="flex justify-between text-xs text-slate-500 pt-6 border-t border-dashed border-slate-300">
+                <div>مهر و امضای صادرکننده</div>
+                <div>امضای تحویل‌گیرنده / مشتری</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // هندلرهای ثبت فرم‌ها
+    // ==========================================
+    function submitRates(e) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      state.rates = {
+        gold18: Number(fd.get('gold18')),
+        melted: Number(fd.get('melted')),
+        coinFull: Number(fd.get('coinFull')),
+        coinHalf: Number(fd.get('coinHalf')),
+        coinQuarter: Number(fd.get('coinQuarter')),
+        coinGram: Number(fd.get('coinGram')),
+        usd: Number(fd.get('usd')),
+        eur: Number(fd.get('eur')),
+        try: Number(fd.get('try')),
+        updatedAt: todayJalali()
+      };
+      closeModal();
+      saveState();
+    }
+
+    function submitTransaction(e) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const amount = Number(fd.get('amount'));
+      const type = fd.get('type');
+      const accountId = fd.get('accountId');
+
+      state.transactions.unshift({
+        id: uid('tx'),
+        workspace: fd.get('workspace'),
+        type,
+        category: fd.get('category'),
+        amount,
+        accountId,
+        date: fd.get('date'),
+        note: fd.get('note')
+      });
+
+      const acc = state.accounts.find(a => a.id === accountId);
+      if (acc) {
+        acc.balance = Number(acc.balance) + (type === 'income' ? amount : -amount);
+      }
+      closeModal();
+      saveState();
+    }
+
+    function submitAccount(e) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      state.accounts.push({
+        id: uid('acc'),
+        workspace: fd.get('workspace'),
+        name: fd.get('name'),
+        bank: fd.get('bank'),
+        balance: Number(fd.get('balance'))
+      });
+      closeModal();
+      saveState();
+    }
+
+    function submitDebt(e) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      state.debts.unshift({
+        id: uid('dbt'),
+        workspace: fd.get('workspace'),
+        kind: fd.get('kind'),
+        title: fd.get('title'),
+        person: fd.get('person'),
+        amount: Number(fd.get('amount')),
+        dueDate: fd.get('dueDate'),
+        status: 'pending'
+      });
+      closeModal();
+      saveState();
+    }
+
+    function settleDebt(id) {
+      const d = state.debts.find(x => x.id === id);
+      if (d) d.status = 'paid';
+      saveState();
+    }
+
+    function submitTask(e) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      state.tasks.unshift({
+        id: uid('tsk'),
+        workspace: fd.get('workspace'),
+        title: fd.get('title'),
+        priority: fd.get('priority'),
+        dueDate: fd.get('dueDate'),
+        done: false
+      });
+      closeModal();
+      saveState();
+    }
+
+    function toggleTask(id) {
+      const tk = state.tasks.find(x => x.id === id);
+      if (tk) tk.done = !tk.done;
+      saveState();
+    }
+
+    function submitGoal(e) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      state.goals.unshift({
+        id: uid('gl'),
+        workspace: fd.get('workspace'),
+        title: fd.get('title'),
+        target: Number(fd.get('target')),
+        current: Number(fd.get('current')),
+        unit: fd.get('unit'),
+        deadline: fd.get('deadline')
+      });
+      closeModal();
+      saveState();
+    }
+
+    function submitGoalProgress(e, id) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const g = state.goals.find(x => x.id === id);
+      if (g) g.current = Number(g.current) + Number(fd.get('delta'));
+      closeModal();
+      saveState();
+    }
+
+    function submitCustomer(e) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const newCust = {
+        id: uid('cust'),
+        workspace: state.activeWorkspace,
+        name: fd.get('name'),
+        phone: fd.get('phone'),
+        nationalId: fd.get('nationalId'),
+        address: fd.get('address'),
+        deals: []
+      };
+      state.customers.unshift(newCust);
+      selectedCustomerId = newCust.id;
+      closeModal();
+      saveState();
+    }
+
+    function deleteCustomer(id) {
+      if (!confirm('آیا از حذف این مشتری و معاملاتش مطمئن هستید؟')) return;
+      state.customers = state.customers.filter(c => c.id !== id);
+      selectedCustomerId = null;
+      saveState();
+    }
+
+    function submitDeal(e, custId) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const weight = Number(fd.get('weight'));
+      const rate = Number(fd.get('rate'));
+      const wagePercent = Number(fd.get('wagePercent'));
+      const rawGold = weight * rate;
+      const totalAmount = Math.round(rawGold + (rawGold * (wagePercent / 100)));
+
+      const cust = state.customers.find(c => c.id === custId);
+      if (cust) {
+        cust.deals = cust.deals || [];
+        cust.deals.unshift({
+          id: uid('dl'),
+          date: fd.get('date'),
+          type: fd.get('type'),
+          item: fd.get('item'),
+          weight,
+          purity: fd.get('purity'),
+          rate,
+          wagePercent,
+          totalAmount,
+          paidAmount: Number(fd.get('paidAmount')),
+          note: fd.get('note')
+        });
+      }
+      closeModal();
+      saveState();
+    }
+
+    function deleteItem(collection, id) {
+      if (!confirm('حذف شود؟')) return;
+      state[collection] = state[collection].filter(x => x.id !== id);
+      saveState();
+    }
+
+    // ==========================================
+    // رندر اصلی صفحه
+    // ==========================================
+    function render() {
+      const ws = getWorkspaceInfo(state.activeWorkspace);
+      const showCustomersTab = state.activeWorkspace === 'ghaffari_gold' || state.activeWorkspace === 'nuance';
+
+      const tabs = [
+        { id: 'overview', label: '📊 داشبورد و خلاصه' },
+        { id: 'accounting', label: '💰 حسابداری و صندوق‌ها' },
+        { id: 'debts', label: '📅 اقساط، چک و بدهی' },
+        { id: 'tasks', label: '✅ مدیریت کارها' },
+        { id: 'goals', label: '🎯 اهداف زمان‌بندی‌شده' }
+      ];
+      if (showCustomersTab) {
+        tabs.push({ id: 'customers', label: '💎 مشتریان و معاملات طلا' });
+      }
+
+      let contentHtml = '';
+      if (state.activeTab === 'overview') contentHtml = renderOverview(ws);
+      else if (state.activeTab === 'accounting') contentHtml = renderAccounting();
+      else if (state.activeTab === 'debts') contentHtml = renderDebts();
+      else if (state.activeTab === 'tasks') contentHtml = renderTasks();
+      else if (state.activeTab === 'goals') contentHtml = renderGoals();
+      else if (state.activeTab === 'customers') contentHtml = renderCustomers();
+
+      document.getElementById('app').innerHTML = `
+        <div class="min-h-screen flex flex-col">
+          <!-- نوار انتخاب فضاهای کاری -->
+          <header class="${ws.headerBg} text-white shadow-lg transition-colors">
+            <div class="max-w-7xl mx-auto px-4 pt-4 pb-3">
+              <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <div>
+                  <h1 class="text-lg sm:text-xl font-extrabold tracking-tight flex items-center gap-2">
+                    <span>${ws.name}</span>
+                  </h1>
+                  <p class="text-xs text-white/75 mt-0.5">${ws.subtitle}</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                  <button onclick="openWorkspaceInvoice()" class="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3.5 py-2 rounded-xl shadow-xs transition">
+                    📄 خروجی PDF / فاکتور
+                  </button>
+                  <button onclick="exportBackup()" class="text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-xl" title="دانلود فایل پشتیبان">
+                    💾 پشتیبان
+                  </button>
+                  <label class="cursor-pointer text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-xl" title="بازیابی فایل پشتیبان">
+                    📂 بازیابی
+                    <input type="file" accept=".json" onchange="importBackup(event)" class="hidden" />
+                  </label>
+                </div>
+              </div>
+
+              <!-- دکمه‌های جابه‌جایی بین بخش‌ها -->
+              <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+                ${Object.values(WORKSPACES).map(w => `
+                  <button onclick="setWorkspace('${w.id}')" class="whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold transition ${state.activeWorkspace === w.id ? 'bg-white text-slate-950 shadow-sm' : 'bg-white/10 text-white/85 hover:bg-white/20'}">
+                    ${w.name}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </header>
+
+          <!-- محتوای اصلی -->
+          <main class="max-w-7xl w-full mx-auto px-4 py-5 flex-1">
+            ${renderRatesBar()}
+
+            <!-- تب‌های داخلی -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-5 border-b border-slate-200">
+              ${tabs.map(t => `
+                <button onclick="setTab('${t.id}')" class="whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold transition ${state.activeTab === t.id ? 'bg-slate-900 text-white shadow-xs' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'}">
+                  ${t.label}
+                </button>
+              `).join('')}
+            </div>
+
+            ${contentHtml}
+          </main>
+        </div>
+        ${renderModal()}
+        ${renderInvoiceModal()}
+      `;
+    }
+
+    render();
+  </script>
+</body>
+</html>
