@@ -194,6 +194,36 @@
       customers: []
     };
 
+    const GOLD_PORTALS = [
+      {
+        id: 'emadi',
+        title: 'آبشده عمادی',
+        subtitle: 'سامانه معاملات عمادی',
+        url: 'https://emadigold.ir',
+        domain: 'Emadigold.ir',
+        icon: 'scale',
+        accent: 'from-amber-500/20 to-amber-600/5 border-amber-500/30 text-amber-300 hover:border-amber-400'
+      },
+      {
+        id: 'keyhan',
+        title: 'آبشده کیهان',
+        subtitle: 'پنل معاملات کهوند / کیهان',
+        url: 'https://subpnl.kahvandgold.ir',
+        domain: 'Subpnl.kahvandgold.ir',
+        icon: 'coins',
+        accent: 'from-yellow-500/20 to-amber-600/5 border-yellow-500/30 text-yellow-300 hover:border-yellow-400'
+      },
+      {
+        id: 'reygiri',
+        title: 'استعلام ری‌گیری',
+        subtitle: 'بررسی اصالت و عیار انگ طلا',
+        url: 'https://reygiri.com',
+        domain: 'Reygiri.com',
+        icon: 'badge-check',
+        accent: 'from-emerald-500/20 to-teal-600/5 border-emerald-500/30 text-emerald-300 hover:border-emerald-400'
+      }
+    ];
+
     const formatNum = (n) => Number(n || 0).toLocaleString('fa-IR');
     const uid = (p = 'id') => `${p}_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
     const todayJalali = () => {
@@ -586,60 +616,104 @@
               </div>
             </div>
 
-            {/* نوار نرخ دستی تابلو فقط در بخش طلای غفاری */}
+            {/* بخش اختصاصی طلای غفاری: لینک‌های سریع آبشده و ری‌گیری + تابلوی نرخ دستی */}
             {activeWs === 'ghaffari_gold' && (
-              <div className="bg-[#121927] dark:bg-[#121927] border border-amber-500/30 rounded-2xl p-4 shadow-md">
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center">
-                      <Icon name="coins" className="w-4 h-4" />
+              <>
+                {/* دسترسی سریع به آبشده عمادی، آبشده کیهان و ری‌گیری */}
+                <div className="bg-[#121927] dark:bg-[#121927] border border-amber-500/25 rounded-2xl p-4 shadow-md">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-lg bg-amber-500/15 text-amber-400 flex items-center justify-center">
+                        <Icon name="globe" className="w-4 h-4" />
+                      </div>
+                      <h3 className="font-bold text-slate-100 text-xs sm:text-sm">سامانه‌های آبشده و ری‌گیری</h3>
                     </div>
-                    <div>
-                      <h3 className="font-bold text-amber-300 text-xs sm:text-sm">نرخ دستی تابلو طلای غفاری</h3>
-                      <span className="text-[10px] text-slate-400">آخرین ثبت: {data.rates.updatedAt}</span>
-                    </div>
+                    <span className="text-[10px] text-slate-400">باز شدن در پنجره جدید</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={() => setModal({ type: 'editRates' })}
-                      className="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1.5 rounded-xl font-bold"
-                    >
-                      ✏️ ویرایش نرخ‌ها
-                    </button>
-                    <button
-                      onClick={() => setShowRates(!showRates)}
-                      className="text-xs bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-xl"
-                    >
-                      {showRates ? 'بستن' : 'نمایش'}
-                    </button>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    {GOLD_PORTALS.map((portal) => (
+                      <a
+                        key={portal.id}
+                        href={portal.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`group flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-l ${portal.accent} border transition-all duration-200`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-black/30 flex items-center justify-center shrink-0">
+                            <Icon name={portal.icon} className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="font-extrabold text-xs sm:text-sm text-white group-hover:underline">
+                              {portal.title}
+                            </div>
+                            <div className="text-[10px] text-slate-400 mt-0.5">{portal.subtitle}</div>
+                            <div dir="ltr" className="text-[10px] text-slate-500 text-right mt-0.5 font-mono">
+                              {portal.domain}
+                            </div>
+                          </div>
+                        </div>
+                        <Icon name="external-link" className="w-4 h-4 opacity-70 group-hover:opacity-100 shrink-0" />
+                      </a>
+                    ))}
                   </div>
                 </div>
 
-                {showRates && (
-                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                    {[
-                      { label: 'طلای ۱۸ عیار', val: data.rates.gold18, cls: 'text-amber-400' },
-                      { label: 'مثقال آبشده', val: data.rates.melted, cls: 'text-amber-300' },
-                      { label: 'تمام سکه', val: data.rates.coinFull, cls: 'text-yellow-400' },
-                      { label: 'نیم سکه', val: data.rates.coinHalf, cls: 'text-yellow-400' },
-                      { label: 'ربع سکه', val: data.rates.coinQuarter, cls: 'text-yellow-400' },
-                      { label: 'سکه گرمی', val: data.rates.coinGram, cls: 'text-yellow-400' },
-                      { label: 'دلار', val: data.rates.usd, cls: 'text-emerald-400' },
-                      { label: 'یورو', val: data.rates.eur, cls: 'text-sky-400' },
-                      { label: 'لیر', val: data.rates.try, cls: 'text-rose-400' }
-                    ].map((r, i) => (
-                      <div
-                        key={i}
-                        onClick={() => setModal({ type: 'editRates' })}
-                        className="cursor-pointer bg-[#0b101b] hover:bg-slate-800/80 border border-slate-800 rounded-xl p-2.5 transition"
-                      >
-                        <div className="text-[10px] text-slate-400">{r.label}</div>
-                        <div className={`font-extrabold text-xs mt-1 ${r.cls}`}>{formatNum(r.val)}</div>
+                {/* تابلوی نرخ دستی طلای غفاری */}
+                <div className="bg-[#121927] dark:bg-[#121927] border border-amber-500/30 rounded-2xl p-4 shadow-md">
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center">
+                        <Icon name="coins" className="w-4 h-4" />
                       </div>
-                    ))}
+                      <div>
+                        <h3 className="font-bold text-amber-300 text-xs sm:text-sm">نرخ دستی تابلو طلای غفاری</h3>
+                        <span className="text-[10px] text-slate-400">آخرین ثبت: {data.rates.updatedAt}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => setModal({ type: 'editRates' })}
+                        className="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1.5 rounded-xl font-bold"
+                      >
+                        ✏️ ویرایش نرخ‌ها
+                      </button>
+                      <button
+                        onClick={() => setShowRates(!showRates)}
+                        className="text-xs bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-xl"
+                      >
+                        {showRates ? 'بستن' : 'نمایش'}
+                      </button>
+                    </div>
                   </div>
-                )}
-              </div>
+
+                  {showRates && (
+                    <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                      {[
+                        { label: 'طلای ۱۸ عیار', val: data.rates.gold18, cls: 'text-amber-400' },
+                        { label: 'مثقال آبشده', val: data.rates.melted, cls: 'text-amber-300' },
+                        { label: 'تمام سکه', val: data.rates.coinFull, cls: 'text-yellow-400' },
+                        { label: 'نیم سکه', val: data.rates.coinHalf, cls: 'text-yellow-400' },
+                        { label: 'ربع سکه', val: data.rates.coinQuarter, cls: 'text-yellow-400' },
+                        { label: 'سکه گرمی', val: data.rates.coinGram, cls: 'text-yellow-400' },
+                        { label: 'دلار', val: data.rates.usd, cls: 'text-emerald-400' },
+                        { label: 'یورو', val: data.rates.eur, cls: 'text-sky-400' },
+                        { label: 'لیر', val: data.rates.try, cls: 'text-rose-400' }
+                      ].map((r, i) => (
+                        <div
+                          key={i}
+                          onClick={() => setModal({ type: 'editRates' })}
+                          className="cursor-pointer bg-[#0b101b] hover:bg-slate-800/80 border border-slate-800 rounded-xl p-2.5 transition"
+                        >
+                          <div className="text-[10px] text-slate-400">{r.label}</div>
+                          <div className={`font-extrabold text-xs mt-1 ${r.cls}`}>{formatNum(r.val)}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
             )}
 
             {/* ================= تب ۱: نمای کلی ================= */}
