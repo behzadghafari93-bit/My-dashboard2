@@ -1,18 +1,23 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#0f172a" />
-  <title>داشبورد مدیریت یکپارچه | Hideaway • طلای غفاری • Nuance</title>
+  <meta name="theme-color" content="#090d16" />
+  <title>داشبورد مدیریت یکپارچه | Hideaway • Nuance • طلای غفاری</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -20,8 +25,10 @@
 
   <style>
     * { font-family: 'Vazirmatn', sans-serif !important; }
-    body { background-color: #f1f5f9; color: #0f172a; margin: 0; -webkit-tap-highlight-color: transparent; }
-    
+    body { margin: 0; -webkit-tap-highlight-color: transparent; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
     @media print {
       body * { visibility: hidden; }
       #printable-invoice, #printable-invoice * { visibility: visible; }
@@ -30,6 +37,7 @@
         inset: 0;
         width: 100%;
         background: white !important;
+        color: black !important;
         padding: 24px !important;
         z-index: 999999;
       }
@@ -37,7 +45,7 @@
     }
   </style>
 </head>
-<body>
+<body class="bg-[#090d16] text-slate-100">
   <div id="root"></div>
 
   <script type="text/babel">
@@ -62,13 +70,12 @@
       all: {
         id: 'all',
         name: 'نمای تجمیعی کل',
-        shortName: 'نمای کل',
-        subtitle: 'گزارش جامع دارایی‌ها، کسب‌وکارها و زندگی شخصی',
-        icon: 'layout-dashboard',
-        gradient: 'from-slate-900 via-slate-800 to-slate-900',
-        pillActive: 'bg-amber-400 text-slate-950 shadow-sm',
-        badge: 'bg-slate-800 text-amber-400',
-        accentBg: 'bg-slate-900 hover:bg-slate-800',
+        tag: 'نمای کلی کل',
+        subtitle: 'گزارش یکپارچه تمام کسب‌وکارها و زندگی شخصی',
+        icon: 'layers',
+        pillActive: 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40',
+        bannerGradient: 'from-emerald-600 via-teal-600 to-emerald-800',
+        badge: 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30',
         categories: {
           income: ['فروش کافه', 'فروش طلا', 'فروش آنلاین‌شاپ', 'سایر درآمدها'],
           expense: ['خرید مواد اولیه', 'خرید طلا و سکه', 'هزینه جاری', 'قبوض', 'سایر هزینه‌ها']
@@ -77,58 +84,54 @@
       hideaway: {
         id: 'hideaway',
         name: 'Hideaway',
-        shortName: 'Hideaway',
+        tag: 'کافه Hideaway',
         subtitle: 'مدیریت مالی، بار، ایونت‌ها و کارهای کافه Hideaway',
         icon: 'coffee',
-        gradient: 'from-[#1e2d3b] via-[#2f4456] to-[#1a2632]',
-        pillActive: 'bg-[#d4af37] text-[#1a2632] shadow-sm',
-        badge: 'bg-[#2f4456] text-[#f3e5ab]',
-        accentBg: 'bg-[#2f4456] hover:bg-[#233341]',
+        pillActive: 'bg-[#2f4456] text-[#f3e5ab] border border-[#d4af37]/50 shadow-lg',
+        bannerGradient: 'from-[#2f4456] via-[#233544] to-[#17232e]',
+        badge: 'bg-[#2f4456]/60 text-[#f3e5ab] border border-[#d4af37]/30',
         categories: {
           income: ['فروش POS کافه', 'فروش نقدی', 'درآمد ورکشاپ و ایونت', 'سفارش بیرون‌بر', 'سایر درآمدهای Hideaway'],
           expense: ['خرید دانه قهوه و بار سرد/گرم', 'خرید کیک و شیرینی', 'حقوق باریستا و پرسنل', 'اجاره و شارژ کافه', 'تبلیغات و تولید محتوا', 'تجهیزات و تعمیرات']
         }
       },
-      ghaffari_gold: {
-        id: 'ghaffari_gold',
-        name: 'طلای غفاری',
-        shortName: 'طلای غفاری',
-        subtitle: 'حسابداری مغازه طلای غفاری، نرخ تابلو و دفتر مشتریان',
-        icon: 'gem',
-        gradient: 'from-amber-950 via-amber-900 to-stone-900',
-        pillActive: 'bg-amber-400 text-amber-950 shadow-sm',
-        badge: 'bg-amber-900 text-amber-200',
-        accentBg: 'bg-amber-700 hover:bg-amber-800',
-        categories: {
-          income: ['فروش طلای زینتی', 'فروش سکه و آبشده', 'دریافت اجرت و سود', 'سایر درآمدهای مغازه'],
-          expense: ['خرید طلای آبشده / بنکداری', 'خرید سکه', 'اجرت ساخت کارگاه', 'حقوق و کمیسیون', 'امنیت، بیمه و اجاره مغازه']
-        }
-      },
       nuance: {
         id: 'nuance',
         name: 'Nuance',
-        shortName: 'Nuance',
+        tag: 'آنلاین‌شاپ Nuance',
         subtitle: 'مدیریت فروش آنلاین، بسته‌بندی و مشتریان Nuance',
-        icon: 'sparkles',
-        gradient: 'from-[#360312] via-[#4c0519] to-[#29020d]',
-        pillActive: 'bg-[#e2b857] text-[#360312] shadow-sm',
-        badge: 'bg-[#4c0519] text-[#f5d076]',
-        accentBg: 'bg-[#4c0519] hover:bg-[#380312]',
+        icon: 'gem',
+        pillActive: 'bg-[#6b0f2b] text-[#f8d778] border border-[#e2b857]/50 shadow-lg',
+        bannerGradient: 'from-[#6b0f2b] via-[#4c0519] to-[#2e030f]',
+        badge: 'bg-[#4c0519]/70 text-[#f8d778] border border-[#e2b857]/30',
         categories: {
           income: ['فروش آنلاین سایت / اینستاگرام', 'سفارش اختصاصی مشتری', 'تسویه درگاه پرداخت', 'سایر درآمدهای Nuance'],
           expense: ['تأمین طلا و متریال', 'چاپ و بسته‌بندی لوکس (زرشکی/طلاکوب)', 'تبلیغات و عکاسی', 'ارسال پستی و پیک بیمه', 'کارمزد درگاه و مالیات']
         }
       },
+      ghaffari_gold: {
+        id: 'ghaffari_gold',
+        name: 'طلای غفاری',
+        tag: 'مغازه طلای غفاری',
+        subtitle: 'حسابداری مغازه طلای غفاری، نرخ تابلو و دفتر مشتریان',
+        icon: 'coins',
+        pillActive: 'bg-amber-600 text-white shadow-lg shadow-amber-900/40',
+        bannerGradient: 'from-amber-600 via-amber-700 to-stone-900',
+        badge: 'bg-amber-500/20 text-amber-300 border border-amber-500/30',
+        categories: {
+          income: ['فروش طلای زینتی', 'فروش سکه و آبشده', 'دریافت اجرت و سود', 'سایر درآمدهای مغازه'],
+          expense: ['خرید طلای آبشده / بنکداری', 'خرید سکه', 'اجرت ساخت کارگاه', 'حقوق و کمیسیون', 'امنیت، بیمه و اجاره مغازه']
+        }
+      },
       home: {
         id: 'home',
         name: 'کارهای خانه',
-        shortName: 'خانه',
+        tag: 'مدیریت منزل',
         subtitle: 'مدیریت مخارج منزل، خریدهای خانه و کارهای روزمره',
         icon: 'home',
-        gradient: 'from-emerald-950 via-emerald-900 to-teal-950',
-        pillActive: 'bg-emerald-400 text-emerald-950 shadow-sm',
-        badge: 'bg-emerald-900 text-emerald-200',
-        accentBg: 'bg-emerald-700 hover:bg-emerald-800',
+        pillActive: 'bg-teal-600 text-white shadow-lg',
+        bannerGradient: 'from-teal-600 via-emerald-700 to-slate-900',
+        badge: 'bg-teal-500/20 text-teal-300 border border-teal-500/30',
         categories: {
           income: ['بودجه واریزی منزل', 'سایر واریزی‌های خانه'],
           expense: ['خرید سوپرمارکت و میوه', 'پروتئین و مواد غذایی', 'لوازم و تعمیرات منزل', 'شارژ ساختمان و نظافت', 'خرید برای منزل']
@@ -137,13 +140,12 @@
       personal: {
         id: 'personal',
         name: 'کارهای شخصی',
-        shortName: 'شخصی',
+        tag: 'امور شخصی',
         subtitle: 'حسابداری شخصی، قبوض، اقساط، اهداف و برنامه‌ریزی فردی',
         icon: 'user',
-        gradient: 'from-indigo-950 via-indigo-900 to-slate-900',
-        pillActive: 'bg-indigo-400 text-indigo-950 shadow-sm',
-        badge: 'bg-indigo-950 text-indigo-200',
-        accentBg: 'bg-indigo-700 hover:bg-indigo-800',
+        pillActive: 'bg-indigo-600 text-white shadow-lg',
+        bannerGradient: 'from-indigo-600 via-indigo-800 to-slate-900',
+        badge: 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30',
         categories: {
           income: ['برداشت سود از کسب‌وکار', 'سایر درآمدهای شخصی'],
           expense: [
@@ -162,7 +164,7 @@
       }
     };
 
-    const STORAGE_KEY = 'behzad_app_v6_clean_zero';
+    const STORAGE_KEY = 'behzad_dark_v6_zero_data';
 
     const EMPTY_STATE = {
       rates: {
@@ -201,6 +203,7 @@
         }
       });
 
+      const [darkMode, setDarkMode] = useState(true);
       const [activeWs, setActiveWs] = useState('all');
       const [activeTab, setActiveTab] = useState('overview');
       const [showRates, setShowRates] = useState(true);
@@ -209,10 +212,19 @@
       const [invoiceData, setInvoiceData] = useState(null);
 
       useEffect(() => {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        } catch {}
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
       }, [data]);
+
+      useEffect(() => {
+        const html = document.documentElement;
+        if (darkMode) {
+          html.classList.add('dark');
+          document.body.className = 'bg-[#090d16] text-slate-100';
+        } else {
+          html.classList.remove('dark');
+          document.body.className = 'bg-slate-100 text-slate-900';
+        }
+      }, [darkMode]);
 
       const ws = WORKSPACES[activeWs] || WORKSPACES.all;
 
@@ -262,19 +274,12 @@
           try {
             const parsed = JSON.parse(ev.target.result);
             setData({ ...EMPTY_STATE, ...parsed });
-            alert('فایل پشتیبان با موفقیت بازیابی شد.');
+            alert('فایل پشتیبان بازیابی شد.');
           } catch {
             alert('فایل نامعتبر است.');
           }
         };
         reader.readAsText(file);
-      };
-
-      const resetAllToZero = () => {
-        if (confirm('آیا مطمئن هستید که می‌خواهید تمام اطلاعات را پاک کنید و همه‌چیز را صفر کنید؟')) {
-          setData(EMPTY_STATE);
-          localStorage.removeItem(STORAGE_KEY);
-        }
       };
 
       const openGeneralInvoice = () => {
@@ -286,7 +291,7 @@
           rows: filtered.transactions.map(t => ({
             date: t.date,
             desc: `${t.category}${t.note ? ` (${t.note})` : ''}`,
-            meta: t.type === 'income' ? 'درآمد / واریز' : t.type === 'expense' ? 'هزینه / برداشت' : 'انتقال وجه',
+            meta: t.type === 'income' ? 'درآمد / واریز' : 'هزینه / برداشت',
             amount: t.amount
           })),
           summary: [
@@ -310,7 +315,7 @@
           rows: deals.map(d => ({
             date: d.date,
             desc: `${d.type === 'sell' ? 'فروش' : 'خرید'}: ${d.item} (${d.weight} گرم | عیار ${d.purity} | اجرت ${d.wagePercent}%)`,
-            meta: `فی هر گرم: ${formatNum(d.rate)}`,
+            meta: `فی: ${formatNum(d.rate)}`,
             amount: d.totalAmount
           })),
           summary: [
@@ -321,116 +326,137 @@
         });
       };
 
-      const tabs = [
-        { id: 'overview', label: 'خلاصه', icon: 'layout-grid' },
-        { id: 'accounting', label: 'حسابداری', icon: 'wallet' },
+      const navItems = [
+        { id: 'overview', label: 'نمای کلی', icon: 'layout-grid' },
+        { id: 'accounting', label: 'حسابداری', icon: 'arrow-left-right' },
+        { id: 'accounts', label: 'حساب‌ها', icon: 'wallet' },
         { id: 'debts', label: 'اقساط و چک', icon: 'calendar-clock' },
-        { id: 'tasks', label: 'کارها', icon: 'check-square' },
         { id: 'goals', label: 'اهداف', icon: 'target' },
+        { id: 'tasks', label: 'مدیریت کارها', icon: 'check-square' },
         ...(activeWs === 'ghaffari_gold' || activeWs === 'nuance'
           ? [{ id: 'customers', label: 'مشتریان طلا', icon: 'users' }]
           : [])
       ];
 
       return (
-        <div className="min-h-screen flex flex-col bg-slate-100 pb-6">
-          {/* هدر جمع‌وجور و کاملاً واکنش‌گرا بدون اسکرول افقی */}
-          <header className={`bg-gradient-to-l ${ws.gradient} text-white shadow-lg transition-all duration-300`}>
-            <div className="max-w-7xl mx-auto px-3.5 sm:px-6 pt-3.5 pb-3.5">
-              {/* ردیف اول: عنوان و دکمه‌های ابزار */}
-              <div className="flex items-center justify-between gap-2 mb-3">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
-                    <Icon name={ws.icon} className="w-5 h-5 text-amber-300" />
-                  </div>
-                  <div className="min-w-0">
-                    <h1 className="text-base sm:text-xl font-black truncate">{ws.name}</h1>
-                    <p className="text-[11px] text-white/70 truncate hidden sm:block">{ws.subtitle}</p>
-                  </div>
-                </div>
+        <div className="min-h-screen pb-24 transition-colors duration-200">
+          <div className="max-w-5xl mx-auto px-3.5 pt-3.5 space-y-4">
 
-                <div className="flex items-center gap-1.5 shrink-0">
+            {/* ردیف بالای انتخاب فضاهای کاری دقیقاً شبیه اسکرین‌شات */}
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+              {Object.values(WORKSPACES).map((item) => {
+                const active = activeWs === item.id;
+                return (
                   <button
-                    onClick={openGeneralInvoice}
-                    className="flex items-center gap-1 text-[11px] sm:text-xs bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold px-2.5 sm:px-3.5 py-2 rounded-xl transition"
+                    key={item.id}
+                    onClick={() => handleWorkspaceChange(item.id)}
+                    className={`flex items-center gap-2 whitespace-nowrap px-4 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+                      active
+                        ? item.pillActive
+                        : 'bg-[#131a29] dark:bg-[#131a29] text-slate-300 border border-slate-800 hover:border-slate-700'
+                    }`}
                   >
-                    <Icon name="file-text" className="w-3.5 h-3.5" />
-                    <span>فاکتور PDF</span>
+                    <Icon name={item.icon} className="w-4 h-4" />
+                    <span>{item.name}</span>
                   </button>
-                  <button
-                    onClick={exportJSON}
-                    className="p-2 text-xs bg-white/10 hover:bg-white/20 border border-white/15 text-white rounded-xl transition"
-                    title="پشتیبان"
-                  >
-                    <Icon name="download" className="w-3.5 h-3.5" />
-                  </button>
-                  <label
-                    className="cursor-pointer p-2 text-xs bg-white/10 hover:bg-white/20 border border-white/15 text-white rounded-xl transition"
-                    title="بازیابی"
-                  >
-                    <Icon name="upload" className="w-3.5 h-3.5" />
-                    <input type="file" accept=".json" onChange={importJSON} className="hidden" />
-                  </label>
-                  <button
-                    onClick={resetAllToZero}
-                    className="p-2 text-xs bg-rose-500/20 hover:bg-rose-500/30 border border-rose-400/30 text-rose-200 rounded-xl transition"
-                    title="صفر کردن"
-                  >
-                    <Icon name="rotate-ccw" className="w-3.5 h-3.5" />
-                  </button>
+                );
+              })}
+            </div>
+
+            {/* بنر بزرگ رنگی اصلی دقیقاً مطابق تصویر */}
+            <div className={`bg-gradient-to-l ${ws.bannerGradient} rounded-3xl p-5 text-white shadow-xl relative overflow-hidden`}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center shrink-0">
+                    <Icon name={ws.icon} className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h1 className="text-xl sm:text-2xl font-black tracking-tight">{ws.name}</h1>
+                      <span className="text-[11px] bg-black/25 px-2.5 py-0.5 rounded-full text-white/90 font-medium">
+                        {ws.tag}
+                      </span>
+                    </div>
+                    <p className="text-xs text-white/80 mt-1">{ws.subtitle}</p>
+                  </div>
                 </div>
               </div>
 
-              {/* ردیف دوم: شبکه ۳ ستونه در موبایل و ۶ ستونه در دسکتاپ (بدون اسکرول افقی و بریدگی!) */}
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5">
-                {Object.values(WORKSPACES).map((item) => {
-                  const isActive = activeWs === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => handleWorkspaceChange(item.id)}
-                      className={`flex items-center justify-center gap-1.5 px-2 py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all ${
-                        isActive
-                          ? item.pillActive
-                          : 'bg-white/10 hover:bg-white/20 text-white/85 border border-white/10'
-                      }`}
-                    >
-                      <Icon name={item.icon} className="w-3.5 h-3.5" />
-                      <span className="truncate">{item.shortName}</span>
-                    </button>
-                  );
-                })}
+              {/* ردیف دکمه‌های عملیات روی بنر */}
+              <div className="flex flex-wrap items-center gap-2 mt-5">
+                <button
+                  onClick={() => setModal({ type: 'addTransaction' })}
+                  className="flex items-center gap-1.5 bg-white text-slate-950 hover:bg-slate-100 text-xs font-extrabold px-4 py-2.5 rounded-xl shadow-md transition"
+                >
+                  <Icon name="plus" className="w-4 h-4" />
+                  <span>ثبت تراکنش</span>
+                </button>
+
+                <button
+                  onClick={openGeneralInvoice}
+                  className="flex items-center gap-1.5 bg-black/25 hover:bg-black/35 border border-white/15 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl transition"
+                >
+                  <Icon name="printer" className="w-4 h-4" />
+                  <span>خروجی PDF / فاکتور</span>
+                </button>
+
+                <button
+                  onClick={() => setModal({ type: 'addTask' })}
+                  className="flex items-center gap-1.5 bg-black/25 hover:bg-black/35 border border-white/15 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl transition"
+                >
+                  <Icon name="plus" className="w-4 h-4" />
+                  <span>کار جدید</span>
+                </button>
+
+                <button
+                  onClick={() => setDarkMode(!darkMode)}
+                  className="p-2.5 bg-black/25 hover:bg-black/35 border border-white/15 text-white rounded-xl transition"
+                  title="تغییر تم روز / شب"
+                >
+                  <Icon name={darkMode ? 'sun' : 'moon'} className="w-4 h-4" />
+                </button>
+
+                <button
+                  onClick={exportJSON}
+                  className="p-2.5 bg-black/25 hover:bg-black/35 border border-white/15 text-white rounded-xl transition"
+                  title="دانلود فایل پشتیبان"
+                >
+                  <Icon name="download" className="w-4 h-4" />
+                </button>
+
+                <label
+                  className="cursor-pointer p-2.5 bg-black/25 hover:bg-black/35 border border-white/15 text-white rounded-xl transition"
+                  title="بازیابی فایل پشتیبان"
+                >
+                  <Icon name="upload" className="w-4 h-4" />
+                  <input type="file" accept=".json" onChange={importJSON} className="hidden" />
+                </label>
               </div>
             </div>
-          </header>
 
-          {/* بدنه اصلی */}
-          <main className="max-w-7xl w-full mx-auto px-3.5 sm:px-6 pt-4 flex-1">
-            
-            {/* تابلوی نرخ دستی فقط در بخش طلای غفاری */}
+            {/* نوار نرخ دستی تابلو فقط در بخش طلای غفاری */}
             {activeWs === 'ghaffari_gold' && (
-              <div className="bg-gradient-to-l from-amber-50 to-orange-50/70 border border-amber-200 rounded-2xl p-3.5 mb-4 shadow-2xs">
-                <div className="flex items-center justify-between gap-2 mb-2.5">
+              <div className="bg-[#121927] dark:bg-[#121927] border border-amber-500/30 rounded-2xl p-4 shadow-md">
+                <div className="flex items-center justify-between gap-2 mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-amber-500/15 text-amber-700 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center">
                       <Icon name="coins" className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-amber-950 text-xs sm:text-sm">نرخ دستی تابلو طلای غفاری</h3>
-                      <span className="text-[10px] text-amber-700">به‌روزرسانی: {data.rates.updatedAt}</span>
+                      <h3 className="font-bold text-amber-300 text-xs sm:text-sm">نرخ دستی تابلو طلای غفاری</h3>
+                      <span className="text-[10px] text-slate-400">آخرین ثبت: {data.rates.updatedAt}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => setModal({ type: 'editRates' })}
-                      className="flex items-center gap-1 text-[11px] bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1.5 rounded-lg font-bold"
+                      className="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 px-3 py-1.5 rounded-xl font-bold"
                     >
-                      <Icon name="edit-3" className="w-3 h-3" />
-                      <span>تنظیم نرخ‌ها</span>
+                      ✏️ ویرایش نرخ‌ها
                     </button>
                     <button
                       onClick={() => setShowRates(!showRates)}
-                      className="text-[11px] bg-white border border-amber-300 text-amber-900 px-2 py-1.5 rounded-lg font-medium"
+                      className="text-xs bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-xl"
                     >
                       {showRates ? 'بستن' : 'نمایش'}
                     </button>
@@ -438,27 +464,25 @@
                 </div>
 
                 {showRates && (
-                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-1.5 sm:gap-2">
+                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
                     {[
-                      { label: 'طلای ۱۸ عیار', val: data.rates.gold18, cls: 'text-amber-700' },
-                      { label: 'مثقال آبشده', val: data.rates.melted, cls: 'text-amber-800' },
-                      { label: 'تمام سکه', val: data.rates.coinFull, cls: 'text-yellow-700' },
-                      { label: 'نیم سکه', val: data.rates.coinHalf, cls: 'text-yellow-700' },
-                      { label: 'ربع سکه', val: data.rates.coinQuarter, cls: 'text-yellow-700' },
-                      { label: 'سکه گرمی', val: data.rates.coinGram, cls: 'text-yellow-700' },
-                      { label: 'دلار', val: data.rates.usd, cls: 'text-emerald-700' },
-                      { label: 'یورو', val: data.rates.eur, cls: 'text-blue-700' },
-                      { label: 'لیر', val: data.rates.try, cls: 'text-rose-700' }
+                      { label: 'طلای ۱۸ عیار', val: data.rates.gold18, cls: 'text-amber-400' },
+                      { label: 'مثقال آبشده', val: data.rates.melted, cls: 'text-amber-300' },
+                      { label: 'تمام سکه', val: data.rates.coinFull, cls: 'text-yellow-400' },
+                      { label: 'نیم سکه', val: data.rates.coinHalf, cls: 'text-yellow-400' },
+                      { label: 'ربع سکه', val: data.rates.coinQuarter, cls: 'text-yellow-400' },
+                      { label: 'سکه گرمی', val: data.rates.coinGram, cls: 'text-yellow-400' },
+                      { label: 'دلار', val: data.rates.usd, cls: 'text-emerald-400' },
+                      { label: 'یورو', val: data.rates.eur, cls: 'text-sky-400' },
+                      { label: 'لیر', val: data.rates.try, cls: 'text-rose-400' }
                     ].map((r, i) => (
                       <div
                         key={i}
                         onClick={() => setModal({ type: 'editRates' })}
-                        className="cursor-pointer bg-white hover:bg-amber-100/50 border border-amber-200/70 rounded-xl p-2 transition"
+                        className="cursor-pointer bg-[#0b101b] hover:bg-slate-800/80 border border-slate-800 rounded-xl p-2.5 transition"
                       >
-                        <div className="text-[10px] text-slate-500 truncate">{r.label}</div>
-                        <div className={`font-extrabold text-xs mt-0.5 truncate ${r.cls}`}>
-                          {formatNum(r.val)}
-                        </div>
+                        <div className="text-[10px] text-slate-400">{r.label}</div>
+                        <div className={`font-extrabold text-xs mt-1 ${r.cls}`}>{formatNum(r.val)}</div>
                       </div>
                     ))}
                   </div>
@@ -466,94 +490,66 @@
               </div>
             )}
 
-            {/* نوار تب‌های داخلی به‌صورت شبکه ۳ ستونه در موبایل (همه تب‌ها بدون اسکرول افقی دیده می‌شوند) */}
-            <div className="grid grid-cols-3 sm:flex sm:flex-wrap gap-1.5 sm:gap-2 pb-3 mb-4 border-b border-slate-200">
-              {tabs.map((t) => {
-                const active = activeTab === t.id;
-                return (
-                  <button
-                    key={t.id}
-                    onClick={() => setActiveTab(t.id)}
-                    className={`flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl text-[11px] sm:text-xs font-bold transition ${
-                      active
-                        ? `${ws.accentBg} text-white shadow-xs`
-                        : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
-                    }`}
-                  >
-                    <Icon name={t.icon} className="w-3.5 h-3.5" />
-                    <span className="truncate">{t.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* ================= تب ۱: داشبورد و خلاصه ================= */}
+            {/* ================= تب ۱: نمای کلی ================= */}
             {activeTab === 'overview' && (
-              <div className="space-y-4 sm:space-y-6">
-                {/* ۴ کارت آماری به‌صورت ۲×۲ در موبایل و ۴ ستونه در دسکتاپ */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
-                  <div className="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200/80 shadow-2xs">
-                    <div className="flex items-center justify-between text-slate-500 mb-1.5">
-                      <span className="text-[11px] sm:text-xs font-medium">موجودی کل حساب‌ها</span>
-                      <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700">
-                        <Icon name="landmark" className="w-3.5 h-3.5" />
+              <div className="space-y-3.5">
+                {/* کارت‌های آماری تیره دقیقاً مثل اسکرین‌شات */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="bg-[#121927] dark:bg-[#121927] border border-slate-800/90 rounded-2xl p-4 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs text-slate-400">مجموع دارایی کل بخش‌ها</div>
+                      <div className="text-xl font-black text-emerald-400 mt-1">
+                        {formatNum(stats.balance)} <span className="text-xs font-normal text-slate-400">تومان</span>
                       </div>
                     </div>
-                    <div className="text-base sm:text-2xl font-black text-slate-900 truncate">
-                      {formatNum(stats.balance)} <span className="text-[10px] sm:text-xs font-normal text-slate-400">ت</span>
+                    <div className="w-11 h-11 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                      <Icon name="wallet" className="w-5 h-5" />
                     </div>
-                    <div className="text-[10px] sm:text-[11px] text-slate-400 mt-1">{filtered.accounts.length} حساب فعال</div>
                   </div>
 
-                  <div className="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200/80 shadow-2xs">
-                    <div className="flex items-center justify-between text-slate-500 mb-1.5">
-                      <span className="text-[11px] sm:text-xs font-medium">مجموع درآمدها</span>
-                      <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
-                        <Icon name="trending-up" className="w-3.5 h-3.5" />
+                  <div className="bg-[#121927] dark:bg-[#121927] border border-slate-800/90 rounded-2xl p-4 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs text-slate-400">درآمد ثبت‌شده</div>
+                      <div className="text-xl font-black text-teal-400 mt-1">
+                        {formatNum(stats.income)} <span className="text-xs font-normal text-slate-400">تومان</span>
                       </div>
                     </div>
-                    <div className="text-base sm:text-2xl font-black text-emerald-600 truncate">
-                      {formatNum(stats.income)} <span className="text-[10px] sm:text-xs font-normal text-slate-400">ت</span>
+                    <div className="w-11 h-11 rounded-2xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
+                      <Icon name="trending-up" className="w-5 h-5" />
                     </div>
-                    <div className="text-[10px] sm:text-[11px] text-slate-400 mt-1">ورودی ثبت‌شده</div>
                   </div>
 
-                  <div className="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200/80 shadow-2xs">
-                    <div className="flex items-center justify-between text-slate-500 mb-1.5">
-                      <span className="text-[11px] sm:text-xs font-medium">مجموع هزینه‌ها</span>
-                      <div className="w-7 h-7 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600">
-                        <Icon name="trending-down" className="w-3.5 h-3.5" />
+                  <div className="bg-[#121927] dark:bg-[#121927] border border-slate-800/90 rounded-2xl p-4 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs text-slate-400">هزینه ثبت‌شده</div>
+                      <div className="text-xl font-black text-rose-400 mt-1">
+                        {formatNum(stats.expense)} <span className="text-xs font-normal text-slate-400">تومان</span>
                       </div>
                     </div>
-                    <div className="text-base sm:text-2xl font-black text-rose-600 truncate">
-                      {formatNum(stats.expense)} <span className="text-[10px] sm:text-xs font-normal text-slate-400">ت</span>
+                    <div className="w-11 h-11 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+                      <Icon name="trending-down" className="w-5 h-5" />
                     </div>
-                    <div className="text-[10px] sm:text-[11px] text-slate-400 mt-1">تراز: {formatNum(stats.income - stats.expense)}</div>
                   </div>
 
-                  <div className="bg-white rounded-2xl p-3.5 sm:p-5 border border-slate-200/80 shadow-2xs">
-                    <div className="flex items-center justify-between text-slate-500 mb-1.5">
-                      <span className="text-[11px] sm:text-xs font-medium">کارها و اقساط</span>
-                      <div className="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
-                        <Icon name="bell-ring" className="w-3.5 h-3.5" />
+                  <div className="bg-[#121927] dark:bg-[#121927] border border-slate-800/90 rounded-2xl p-4 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs text-slate-400">کارهای باقی‌مانده و اقساط</div>
+                      <div className="text-xl font-black text-amber-400 mt-1">
+                        {stats.openTasks} <span className="text-xs font-normal text-slate-400">کار</span> / {stats.pendingDebts} <span className="text-xs font-normal text-slate-400">قسط</span>
                       </div>
                     </div>
-                    <div className="text-base sm:text-2xl font-black text-amber-600">
-                      {stats.openTasks} <span className="text-[11px] font-medium text-slate-500">کار</span> / {stats.pendingDebts} <span className="text-[11px] font-medium text-slate-500">قسط</span>
+                    <div className="w-11 h-11 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                      <Icon name="check-circle-2" className="w-5 h-5" />
                     </div>
-                    <div className="text-[10px] sm:text-[11px] text-slate-400 mt-1">{filtered.goals.length} هدف فعال</div>
                   </div>
                 </div>
 
-                {/* کارت‌های فضاهای کاری در نمای کل (۲ ستونه در موبایل) */}
+                {/* دسترسی سریع به فضاهای کاری */}
                 {activeWs === 'all' && (
-                  <div>
-                    <h3 className="font-bold text-slate-800 text-xs sm:text-sm mb-2.5 flex items-center gap-1.5">
-                      <Icon name="layers" className="w-4 h-4 text-slate-500" />
-                      <span>بخش‌های اختصاصی شما</span>
-                    </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3.5">
-                      {['hideaway', 'ghaffari_gold', 'nuance', 'home', 'personal'].map((id) => {
+                  <div className="bg-[#121927] border border-slate-800/90 rounded-2xl p-4">
+                    <h3 className="font-bold text-slate-200 text-xs mb-3">فضاهای کاری و شخصی</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                      {['hideaway', 'nuance', 'ghaffari_gold', 'home', 'personal'].map((id) => {
                         const item = WORKSPACES[id];
                         const wsBal = data.accounts.filter(a => a.workspace === id).reduce((s, a) => s + Number(a.balance || 0), 0);
                         const wsTasks = data.tasks.filter(t => t.workspace === id && !t.done).length;
@@ -561,17 +557,15 @@
                           <div
                             key={id}
                             onClick={() => handleWorkspaceChange(id)}
-                            className="cursor-pointer bg-white hover:shadow-md border border-slate-200 rounded-2xl p-3.5 transition flex flex-col justify-between"
+                            className="cursor-pointer bg-[#0b101b] hover:border-slate-600 border border-slate-800 rounded-2xl p-3.5 transition"
                           >
-                            <div>
-                              <span className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-lg ${item.badge}`}>
-                                <Icon name={item.icon} className="w-3 h-3" />
-                                {item.name}
-                              </span>
-                            </div>
-                            <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                              <span className="font-extrabold text-slate-800">{formatNum(wsBal)} ت</span>
-                              <span className="text-amber-600 font-semibold">{wsTasks} کار</span>
+                            <span className={`inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-lg ${item.badge}`}>
+                              <Icon name={item.icon} className="w-3.5 h-3.5" />
+                              {item.name}
+                            </span>
+                            <div className="mt-3 flex items-center justify-between text-[11px]">
+                              <span className="font-bold text-slate-200">{formatNum(wsBal)} ت</span>
+                              <span className="text-amber-400">{wsTasks} کار</span>
                             </div>
                           </div>
                         );
@@ -580,283 +574,64 @@
                   </div>
                 )}
 
-                {/* آخرین تراکنش‌ها و کارها */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-bold text-slate-800 text-xs sm:text-sm">آخرین تراکنش‌ها</h3>
-                      <button
-                        onClick={() => setModal({ type: 'addTransaction' })}
-                        className={`flex items-center gap-1 text-[11px] ${ws.accentBg} text-white px-3 py-1.5 rounded-xl font-bold`}
-                      >
-                        <Icon name="plus" className="w-3.5 h-3.5" />
-                        <span>تراکنش جدید</span>
-                      </button>
-                    </div>
-                    {filtered.transactions.length === 0 ? (
-                      <div className="text-center py-7 text-slate-400">
-                        <Icon name="receipt" className="w-7 h-7 mx-auto mb-1.5 opacity-40" />
-                        <p className="text-xs">هنوز تراکنشی ثبت نشده است.</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        {filtered.transactions.slice(0, 5).map((t) => (
-                          <div key={t.id} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs">
-                            <div>
-                              <div className="font-bold text-slate-800">{t.category}</div>
-                              <div className="text-[10px] text-slate-400 mt-0.5">{t.date} {t.note ? `• ${t.note}` : ''}</div>
-                            </div>
-                            <div className={`font-extrabold ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>
-                              {t.type === 'income' ? '+' : '-'} {formatNum(t.amount)} ت
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-bold text-slate-800 text-xs sm:text-sm">کارهای در دست انجام</h3>
-                      <button
-                        onClick={() => setModal({ type: 'addTask' })}
-                        className={`flex items-center gap-1 text-[11px] ${ws.accentBg} text-white px-3 py-1.5 rounded-xl font-bold`}
-                      >
-                        <Icon name="plus" className="w-3.5 h-3.5" />
-                        <span>کار جدید</span>
-                      </button>
-                    </div>
-                    {filtered.tasks.filter(t => !t.done).length === 0 ? (
-                      <div className="text-center py-7 text-slate-400">
-                        <Icon name="check-circle-2" className="w-7 h-7 mx-auto mb-1.5 opacity-40" />
-                        <p className="text-xs">هیچ کار بازی وجود ندارد.</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        {filtered.tasks.filter(t => !t.done).slice(0, 5).map((tk) => (
-                          <div key={tk.id} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={tk.done}
-                                onChange={() => setData(d => ({ ...d, tasks: d.tasks.map(x => x.id === tk.id ? { ...x, done: !x.done } : x) }))}
-                                className="w-4 h-4 rounded text-amber-600"
-                              />
-                              <span className="font-bold text-slate-800">{tk.title}</span>
-                            </label>
-                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                              tk.priority === 'urgent' ? 'bg-rose-100 text-rose-700' : tk.priority === 'important' ? 'bg-amber-100 text-amber-700' : 'bg-slate-200 text-slate-700'
-                            }`}>
-                              {tk.priority === 'urgent' ? 'فوری' : tk.priority === 'important' ? 'مهم' : 'عادی'}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* ================= تب ۲: حسابداری و صندوق‌ها ================= */}
-            {activeTab === 'accounting' && (
-              <div className="space-y-5">
-                <div>
+                {/* آخرین تراکنش‌ها */}
+                <div className="bg-[#121927] border border-slate-800/90 rounded-2xl p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-bold text-slate-800 text-sm">حساب‌ها و صندوق‌ها</h3>
-                    <button
-                      onClick={() => setModal({ type: 'addAccount' })}
-                      className={`flex items-center gap-1 text-xs ${ws.accentBg} text-white px-3 py-2 rounded-xl font-bold`}
-                    >
-                      <Icon name="plus" className="w-3.5 h-3.5" />
-                      <span>حساب جدید</span>
-                    </button>
+                    <h3 className="font-bold text-slate-200 text-xs">آخرین تراکنش‌ها</h3>
+                    <button onClick={() => setModal({ type: 'addTransaction' })} className="text-xs text-emerald-400 font-bold">+ جدید</button>
                   </div>
-
-                  {filtered.accounts.length === 0 ? (
-                    <div className="bg-white border border-dashed border-slate-300 rounded-2xl p-6 text-center text-slate-400">
-                      <p className="text-xs">هنوز حسابی ثبت نشده است. روی «حساب جدید» بزنید.</p>
-                    </div>
+                  {filtered.transactions.length === 0 ? (
+                    <p className="text-center text-xs text-slate-500 py-6">هنوز تراکنشی ثبت نشده است.</p>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {filtered.accounts.map((acc) => (
-                        <div key={acc.id} className="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs flex items-center justify-between">
+                    <div className="space-y-2">
+                      {filtered.transactions.slice(0, 5).map((t) => (
+                        <div key={t.id} className="flex items-center justify-between p-3 rounded-xl bg-[#0b101b] border border-slate-800/80 text-xs">
                           <div>
-                            <div className="text-[11px] text-slate-400">{acc.bank || 'صندوق'} • {WORKSPACES[acc.workspace]?.name}</div>
-                            <div className="font-bold text-slate-900 text-sm mt-0.5">{acc.name}</div>
-                            <div className="text-base font-black text-emerald-700 mt-1.5">
-                              {formatNum(acc.balance)} <span className="text-xs font-normal text-slate-400">تومان</span>
-                            </div>
+                            <div className="font-bold text-slate-200">{t.category}</div>
+                            <div className="text-[10px] text-slate-500 mt-0.5">{t.date} {t.note ? `• ${t.note}` : ''}</div>
                           </div>
-                          <button
-                            onClick={() => {
-                              if (confirm('حذف شود؟')) setData(d => ({ ...d, accounts: d.accounts.filter(x => x.id !== acc.id) }));
-                            }}
-                            className="text-rose-500 hover:bg-rose-50 p-2 rounded-xl"
-                          >
-                            <Icon name="trash-2" className="w-4 h-4" />
-                          </button>
+                          <div className={`font-extrabold ${t.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                            {t.type === 'income' ? '+' : '-'} {formatNum(t.amount)} ت
+                          </div>
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
-
-                <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-bold text-slate-800 text-sm">دفتر درآمد و هزینه</h3>
-                    <button
-                      onClick={() => setModal({ type: 'addTransaction' })}
-                      className="flex items-center gap-1 text-xs bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl font-bold"
-                    >
-                      <Icon name="plus-circle" className="w-3.5 h-3.5" />
-                      <span>ثبت تراکنش</span>
-                    </button>
-                  </div>
-
-                  {filtered.transactions.length === 0 ? (
-                    <p className="text-center text-xs text-slate-400 py-6">تراکنشی ثبت نشده است.</p>
-                  ) : (
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-right text-xs">
-                        <thead>
-                          <tr className="border-b border-slate-200 text-slate-500">
-                            <th className="py-2.5 px-2">تاریخ</th>
-                            <th className="py-2.5 px-2">دسته‌بندی</th>
-                            <th className="py-2.5 px-2">مبلغ</th>
-                            <th className="py-2.5 px-2">حذف</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filtered.transactions.map((t) => (
-                            <tr key={t.id} className="border-b border-slate-100">
-                              <td className="py-2.5 px-2 text-slate-500">{t.date}</td>
-                              <td className="py-2.5 px-2 font-bold text-slate-800">
-                                {t.category}
-                                {t.note && <div className="text-[10px] font-normal text-slate-400">{t.note}</div>}
-                              </td>
-                              <td className={`py-2.5 px-2 font-extrabold ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}`}>
-                                {t.type === 'income' ? '+' : '-'} {formatNum(t.amount)}
-                              </td>
-                              <td className="py-2.5 px-2">
-                                <button
-                                  onClick={() => {
-                                    if (confirm('حذف شود؟')) setData(d => ({ ...d, transactions: d.transactions.filter(x => x.id !== t.id) }));
-                                  }}
-                                  className="text-rose-500"
-                                >
-                                  حذف
-                                </button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-                </div>
               </div>
             )}
 
-            {/* ================= تب ۳: اقساط، چک و بدهی ================= */}
-            {activeTab === 'debts' && (
-              <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs">
+            {/* ================= تب ۲: حسابداری ================= */}
+            {activeTab === 'accounting' && (
+              <div className="bg-[#121927] border border-slate-800/90 rounded-2xl p-4">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-bold text-slate-800 text-sm">اقساط، چک‌ها، بدهی و طلب</h3>
+                  <h3 className="font-bold text-slate-200 text-sm">دفتر درآمد و هزینه</h3>
                   <button
-                    onClick={() => setModal({ type: 'addDebt' })}
-                    className={`flex items-center gap-1 text-xs ${ws.accentBg} text-white px-3.5 py-2 rounded-xl font-bold`}
+                    onClick={() => setModal({ type: 'addTransaction' })}
+                    className="bg-emerald-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl"
                   >
-                    <Icon name="plus" className="w-3.5 h-3.5" />
-                    <span>ثبت جدید</span>
+                    + ثبت تراکنش
                   </button>
                 </div>
-
-                {filtered.debts.length === 0 ? (
-                  <p className="text-center text-xs text-slate-400 py-8">موردی ثبت نشده است.</p>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {filtered.debts.map((d) => (
-                      <div key={d.id} className={`border rounded-2xl p-4 ${d.status === 'paid' ? 'border-emerald-200 bg-emerald-50/40' : 'border-slate-200 bg-white'}`}>
-                        <div className="flex items-center justify-between">
-                          <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${d.kind === 'receivable' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-800'}`}>
-                            {d.kind === 'installment' ? 'قسط' : d.kind === 'check' ? 'چک' : d.kind === 'receivable' ? 'طلب' : 'بدهی'}
-                          </span>
-                          <span className="text-xs text-slate-400">سررسید: {d.dueDate}</span>
-                        </div>
-                        <div className="font-bold text-slate-900 text-sm mt-2">{d.title}</div>
-                        <div className="text-xs text-slate-500 mt-0.5">طرف حساب: {d.person || '-'}</div>
-                        <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
-                          <span className="font-black text-sm text-slate-900">{formatNum(d.amount)} تومان</span>
-                          <div className="flex items-center gap-2">
-                            {d.status === 'pending' ? (
-                              <button
-                                onClick={() => setData(prev => ({ ...prev, debts: prev.debts.map(x => x.id === d.id ? { ...x, status: 'paid' } : x) }))}
-                                className="text-xs bg-emerald-600 text-white px-3 py-1 rounded-xl font-bold"
-                              >
-                                ✓ تسویه
-                              </button>
-                            ) : (
-                              <span className="text-xs text-emerald-700 font-bold">تسویه‌شده</span>
-                            )}
-                            <button
-                              onClick={() => setData(prev => ({ ...prev, debts: prev.debts.filter(x => x.id !== d.id) }))}
-                              className="text-xs text-rose-500"
-                            >
-                              حذف
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* ================= تب ۴: مدیریت کارها ================= */}
-            {activeTab === 'tasks' && (
-              <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-bold text-slate-800 text-sm">لیست کارها (To-Do)</h3>
-                  <button
-                    onClick={() => setModal({ type: 'addTask' })}
-                    className={`flex items-center gap-1 text-xs ${ws.accentBg} text-white px-3.5 py-2 rounded-xl font-bold`}
-                  >
-                    <Icon name="plus" className="w-3.5 h-3.5" />
-                    <span>کار جدید</span>
-                  </button>
-                </div>
-
-                {filtered.tasks.length === 0 ? (
-                  <p className="text-center text-xs text-slate-400 py-8">لیست کارها خالی است.</p>
+                {filtered.transactions.length === 0 ? (
+                  <p className="text-center text-xs text-slate-500 py-8">تراکنشی ثبت نشده است.</p>
                 ) : (
                   <div className="space-y-2">
-                    {filtered.tasks.map((tk) => (
-                      <div key={tk.id} className={`flex items-center justify-between p-3 rounded-xl border ${tk.done ? 'bg-slate-50 border-slate-100 opacity-60' : 'bg-white border-slate-200'}`}>
-                        <label className="flex items-center gap-2.5 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={tk.done}
-                            onChange={() => setData(d => ({ ...d, tasks: d.tasks.map(x => x.id === tk.id ? { ...x, done: !x.done } : x) }))}
-                            className="w-4 h-4 rounded text-amber-600"
-                          />
-                          <div>
-                            <div className={`text-xs sm:text-sm font-bold ${tk.done ? 'line-through text-slate-400' : 'text-slate-800'}`}>{tk.title}</div>
-                            <div className="text-[10px] text-slate-400">{WORKSPACES[tk.workspace]?.name} • {tk.dueDate || '-'}</div>
-                          </div>
-                        </label>
-                        <div className="flex items-center gap-2">
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                            tk.priority === 'urgent' ? 'bg-rose-100 text-rose-700' : tk.priority === 'important' ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-600'
-                          }`}>
-                            {tk.priority === 'urgent' ? 'فوری' : tk.priority === 'important' ? 'مهم' : 'عادی'}
+                    {filtered.transactions.map((t) => (
+                      <div key={t.id} className="flex items-center justify-between p-3 rounded-xl bg-[#0b101b] border border-slate-800 text-xs">
+                        <div>
+                          <div className="font-bold text-slate-200">{t.category}</div>
+                          <div className="text-[10px] text-slate-500">{WORKSPACES[t.workspace]?.name} • {t.date} {t.note ? `• ${t.note}` : ''}</div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className={`font-extrabold ${t.type === 'income' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                            {t.type === 'income' ? '+' : '-'} {formatNum(t.amount)} ت
                           </span>
                           <button
-                            onClick={() => setData(d => ({ ...d, tasks: d.tasks.filter(x => x.id !== tk.id) }))}
-                            className="text-rose-500 p-1"
+                            onClick={() => setData(d => ({ ...d, transactions: d.transactions.filter(x => x.id !== t.id) }))}
+                            className="text-rose-400 text-[11px]"
                           >
-                            <Icon name="trash-2" className="w-4 h-4" />
+                            حذف
                           </button>
                         </div>
                       </div>
@@ -866,52 +641,139 @@
               </div>
             )}
 
-            {/* ================= تب ۵: اهداف زمان‌بندی‌شده ================= */}
-            {activeTab === 'goals' && (
-              <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs">
+            {/* ================= تب ۳: حساب‌ها ================= */}
+            {activeTab === 'accounts' && (
+              <div className="bg-[#121927] border border-slate-800/90 rounded-2xl p-4">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-bold text-slate-800 text-sm">اهداف زمان‌بندی‌شده</h3>
+                  <h3 className="font-bold text-slate-200 text-sm">حساب‌های بانکی و صندوق‌ها</h3>
                   <button
-                    onClick={() => setModal({ type: 'addGoal' })}
-                    className={`flex items-center gap-1 text-xs ${ws.accentBg} text-white px-3.5 py-2 rounded-xl font-bold`}
+                    onClick={() => setModal({ type: 'addAccount' })}
+                    className="bg-emerald-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl"
                   >
-                    <Icon name="plus" className="w-3.5 h-3.5" />
-                    <span>هدف جدید</span>
+                    + افزودن حساب
                   </button>
                 </div>
-
-                {filtered.goals.length === 0 ? (
-                  <p className="text-center text-xs text-slate-400 py-8">هنوز هدفی تعریف نشده است.</p>
+                {filtered.accounts.length === 0 ? (
+                  <p className="text-center text-xs text-slate-500 py-8">هنوز حسابی تعریف نشده است.</p>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {filtered.accounts.map((acc) => (
+                      <div key={acc.id} className="bg-[#0b101b] border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+                        <div>
+                          <div className="text-[11px] text-slate-400">{acc.bank || 'صندوق'} • {WORKSPACES[acc.workspace]?.name}</div>
+                          <div className="font-bold text-slate-100 text-sm mt-0.5">{acc.name}</div>
+                          <div className="text-lg font-black text-emerald-400 mt-1.5">
+                            {formatNum(acc.balance)} <span className="text-xs font-normal text-slate-400">تومان</span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setData(d => ({ ...d, accounts: d.accounts.filter(x => x.id !== acc.id) }))}
+                          className="text-rose-400 p-2"
+                        >
+                          <Icon name="trash-2" className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ================= تب ۴: اقساط و چک ================= */}
+            {activeTab === 'debts' && (
+              <div className="bg-[#121927] border border-slate-800/90 rounded-2xl p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-slate-200 text-sm">اقساط، چک‌ها، بدهی و طلب</h3>
+                  <button
+                    onClick={() => setModal({ type: 'addDebt' })}
+                    className="bg-amber-500 text-slate-950 text-xs font-bold px-3.5 py-2 rounded-xl"
+                  >
+                    + ثبت جدید
+                  </button>
+                </div>
+                {filtered.debts.length === 0 ? (
+                  <p className="text-center text-xs text-slate-500 py-8">موردی ثبت نشده است.</p>
+                ) : (
+                  <div className="space-y-2.5">
+                    {filtered.debts.map((d) => (
+                      <div key={d.id} className="bg-[#0b101b] border border-slate-800 rounded-2xl p-3.5 flex items-center justify-between">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold">
+                              {d.kind === 'installment' ? 'قسط' : d.kind === 'check' ? 'چک' : d.kind === 'receivable' ? 'طلب' : 'بدهی'}
+                            </span>
+                            <span className="text-[11px] text-slate-400">سررسید: {d.dueDate}</span>
+                          </div>
+                          <div className="font-bold text-slate-100 text-sm mt-1">{d.title}</div>
+                          <div className="text-xs font-black text-emerald-400 mt-1">{formatNum(d.amount)} تومان</div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {d.status === 'pending' ? (
+                            <button
+                              onClick={() => setData(prev => ({ ...prev, debts: prev.debts.map(x => x.id === d.id ? { ...x, status: 'paid' } : x) }))}
+                              className="text-xs bg-emerald-600 text-white px-3 py-1.5 rounded-xl font-bold"
+                            >
+                              تسویه
+                            </button>
+                          ) : (
+                            <span className="text-xs text-emerald-400 font-bold">تسویه‌شده</span>
+                          )}
+                          <button
+                            onClick={() => setData(prev => ({ ...prev, debts: prev.debts.filter(x => x.id !== d.id) }))}
+                            className="text-rose-400 text-xs"
+                          >
+                            حذف
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ================= تب ۵: اهداف ================= */}
+            {activeTab === 'goals' && (
+              <div className="bg-[#121927] border border-slate-800/90 rounded-2xl p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-slate-200 text-sm">اهداف زمان‌بندی‌شده</h3>
+                  <button
+                    onClick={() => setModal({ type: 'addGoal' })}
+                    className="bg-emerald-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl"
+                  >
+                    + هدف جدید
+                  </button>
+                </div>
+                {filtered.goals.length === 0 ? (
+                  <p className="text-center text-xs text-slate-500 py-8">هنوز هدفی تعریف نشده است.</p>
+                ) : (
+                  <div className="space-y-3">
                     {filtered.goals.map((g) => {
                       const pct = Math.min(100, Math.round((Number(g.current || 0) / Math.max(1, Number(g.target || 1))) * 100));
                       return (
-                        <div key={g.id} className="border border-slate-200 rounded-2xl p-4 bg-slate-50/60">
-                          <div className="flex items-center justify-between">
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${WORKSPACES[g.workspace]?.badge}`}>
-                              {WORKSPACES[g.workspace]?.name}
-                            </span>
-                            <span className="text-xs text-slate-500">مهلت: {g.deadline}</span>
+                        <div key={g.id} className="bg-[#0b101b] border border-slate-800 rounded-2xl p-4">
+                          <div className="flex items-center justify-between text-xs text-slate-400">
+                            <span>{WORKSPACES[g.workspace]?.name}</span>
+                            <span>مهلت: {g.deadline}</span>
                           </div>
-                          <div className="font-bold text-slate-900 text-sm mt-2">{g.title}</div>
-                          <div className="flex items-center justify-between text-xs text-slate-600 mt-2.5 mb-1">
-                            <span><b>{formatNum(g.current)}</b> از <b>{formatNum(g.target)}</b> {g.unit}</span>
-                            <span className="font-black text-amber-700">{pct}%</span>
+                          <div className="font-bold text-slate-100 text-sm mt-1">{g.title}</div>
+                          <div className="flex items-center justify-between text-xs text-slate-300 mt-2 mb-1">
+                            <span>{formatNum(g.current)} از {formatNum(g.target)} {g.unit}</span>
+                            <span className="font-black text-emerald-400">{pct}%</span>
                           </div>
-                          <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-                            <div className="h-full bg-amber-500 rounded-full" style={{ width: `${pct}%` }}></div>
+                          <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${pct}%` }}></div>
                           </div>
-                          <div className="mt-3 pt-2.5 border-t border-slate-200/70 flex items-center justify-between">
+                          <div className="mt-3 flex items-center justify-between">
                             <button
                               onClick={() => setModal({ type: 'progressGoal', goalId: g.id })}
-                              className="text-xs bg-slate-900 text-white px-3 py-1.5 rounded-xl font-bold"
+                              className="text-xs bg-slate-800 text-white px-3 py-1.5 rounded-xl font-bold"
                             >
                               + ثبت پیشرفت
                             </button>
                             <button
                               onClick={() => setData(d => ({ ...d, goals: d.goals.filter(x => x.id !== g.id) }))}
-                              className="text-xs text-rose-500"
+                              className="text-xs text-rose-400"
                             >
                               حذف
                             </button>
@@ -924,131 +786,144 @@
               </div>
             )}
 
-            {/* ================= تب ۶: مشتریان و معاملات طلا ================= */}
+            {/* ================= تب ۶: مدیریت کارها ================= */}
+            {activeTab === 'tasks' && (
+              <div className="bg-[#121927] border border-slate-800/90 rounded-2xl p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-slate-200 text-sm">مدیریت کارها (To-Do)</h3>
+                  <button
+                    onClick={() => setModal({ type: 'addTask' })}
+                    className="bg-emerald-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl"
+                  >
+                    + کار جدید
+                  </button>
+                </div>
+                {filtered.tasks.length === 0 ? (
+                  <p className="text-center text-xs text-slate-500 py-8">لیست کارها خالی است.</p>
+                ) : (
+                  <div className="space-y-2">
+                    {filtered.tasks.map((tk) => (
+                      <div key={tk.id} className="flex items-center justify-between p-3 rounded-xl bg-[#0b101b] border border-slate-800 text-xs">
+                        <label className="flex items-center gap-2.5 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={tk.done}
+                            onChange={() => setData(d => ({ ...d, tasks: d.tasks.map(x => x.id === tk.id ? { ...x, done: !x.done } : x) }))}
+                            className="w-4 h-4 rounded"
+                          />
+                          <span className={tk.done ? 'line-through text-slate-500' : 'font-bold text-slate-200'}>{tk.title}</span>
+                        </label>
+                        <button
+                          onClick={() => setData(d => ({ ...d, tasks: d.tasks.filter(x => x.id !== tk.id) }))}
+                          className="text-rose-400"
+                        >
+                          حذف
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ================= تب ۷: مشتریان طلا ================= */}
             {activeTab === 'customers' && (activeWs === 'ghaffari_gold' || activeWs === 'nuance') && (() => {
               const selectedCust = filtered.customers.find(c => c.id === selectedCustomerId) || filtered.customers[0];
               return (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs">
+                <div className="space-y-4">
+                  <div className="bg-[#121927] border border-slate-800/90 rounded-2xl p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-bold text-slate-800 text-sm">مشتریان ({filtered.customers.length})</h3>
+                      <h3 className="font-bold text-slate-200 text-sm">مشتریان ({filtered.customers.length})</h3>
                       <button
                         onClick={() => setModal({ type: 'addCustomer' })}
-                        className={`flex items-center gap-1 text-xs ${ws.accentBg} text-white px-3 py-1.5 rounded-xl font-bold`}
+                        className="bg-amber-500 text-slate-950 text-xs font-bold px-3 py-1.5 rounded-xl"
                       >
-                        <Icon name="user-plus" className="w-3.5 h-3.5" />
-                        <span>مشتری جدید</span>
+                        + مشتری جدید
                       </button>
                     </div>
                     {filtered.customers.length === 0 ? (
-                      <p className="text-center text-xs text-slate-400 py-6">هنوز مشتری ثبت نشده است.</p>
+                      <p className="text-center text-xs text-slate-500 py-6">هنوز مشتری ثبت نشده است.</p>
                     ) : (
-                      <div className="space-y-2">
-                        {filtered.customers.map((c) => {
-                          const total = (c.deals || []).reduce((s, d) => s + Number(d.totalAmount || 0), 0);
-                          const paid = (c.deals || []).reduce((s, d) => s + Number(d.paidAmount || 0), 0);
-                          const rem = total - paid;
-                          const isSel = selectedCust?.id === c.id;
-                          return (
-                            <div
-                              key={c.id}
-                              onClick={() => setSelectedCustomerId(c.id)}
-                              className={`cursor-pointer p-3 rounded-xl border transition ${isSel ? 'border-amber-500 bg-amber-50/70' : 'border-slate-200 hover:bg-slate-50'}`}
-                            >
-                              <div className="flex items-center justify-between">
-                                <span className="font-bold text-sm text-slate-900">{c.name}</span>
-                                <span className="text-[11px] text-slate-500">{c.phone || ''}</span>
-                              </div>
-                              <div className="flex items-center justify-between text-[11px] mt-1.5">
-                                <span className="text-slate-500">{(c.deals || []).length} معامله</span>
-                                <span className={`font-bold ${rem > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
-                                  {rem > 0 ? `مانده: ${formatNum(rem)} ت` : 'تسویه'}
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        })}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {filtered.customers.map((c) => (
+                          <div
+                            key={c.id}
+                            onClick={() => setSelectedCustomerId(c.id)}
+                            className={`cursor-pointer p-3 rounded-xl border ${selectedCust?.id === c.id ? 'border-amber-500 bg-amber-500/10' : 'border-slate-800 bg-[#0b101b]'}`}
+                          >
+                            <div className="font-bold text-sm text-slate-100">{c.name}</div>
+                            <div className="text-[11px] text-slate-400 mt-0.5">{c.phone || '-'} • {(c.deals || []).length} معامله</div>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
 
-                  <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs">
-                    {!selectedCust ? (
-                      <div className="text-center py-10 text-slate-400">
-                        <p className="text-xs">مشتری جدید بسازید یا انتخاب کنید.</p>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="flex flex-wrap items-start justify-between gap-2 pb-3 border-b border-slate-200">
-                          <div>
-                            <h3 className="font-black text-base text-slate-900">{selectedCust.name}</h3>
-                            <p className="text-[11px] text-slate-500 mt-0.5">
-                              تلفن: {selectedCust.phone || '-'} | کد ملی: {selectedCust.nationalId || '-'}
-                            </p>
-                          </div>
-                          <div className="flex flex-wrap gap-1.5">
-                            <button
-                              onClick={() => setModal({ type: 'addDeal', customerId: selectedCust.id })}
-                              className="text-xs bg-amber-600 text-white px-3 py-1.5 rounded-xl font-bold"
-                            >
-                              + ثبت معامله
-                            </button>
-                            <button
-                              onClick={() => openCustomerInvoice(selectedCust)}
-                              className="text-xs bg-slate-900 text-white px-3 py-1.5 rounded-xl font-bold"
-                            >
-                              📄 فاکتور PDF
-                            </button>
-                            <button
-                              onClick={() => {
-                                if (confirm('مشتری حذف شود؟')) {
-                                  setData(d => ({ ...d, customers: d.customers.filter(x => x.id !== selectedCust.id) }));
-                                  setSelectedCustomerId(null);
-                                }
-                              }}
-                              className="text-xs bg-rose-50 text-rose-600 px-2.5 py-1.5 rounded-xl"
-                            >
-                              حذف
-                            </button>
-                          </div>
+                  {selectedCust && (
+                    <div className="bg-[#121927] border border-slate-800/90 rounded-2xl p-4">
+                      <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-800">
+                        <div>
+                          <h4 className="font-black text-base text-white">{selectedCust.name}</h4>
+                          <p className="text-xs text-slate-400">{selectedCust.phone || '-'} | کد ملی: {selectedCust.nationalId || '-'}</p>
                         </div>
-
-                        {(selectedCust.deals || []).length === 0 ? (
-                          <p className="text-center text-xs text-slate-400 py-8">هنوز معامله‌ای ثبت نشده است.</p>
-                        ) : (
-                          <div className="mt-3 overflow-x-auto">
-                            <table className="w-full text-right text-xs">
-                              <thead>
-                                <tr className="border-b border-slate-200 text-slate-500">
-                                  <th className="py-2 px-2">تاریخ</th>
-                                  <th className="py-2 px-2">کالا</th>
-                                  <th className="py-2 px-2">وزن</th>
-                                  <th className="py-2 px-2">مبلغ کل</th>
-                                  <th className="py-2 px-2">پرداختی</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {selectedCust.deals.map((dl) => (
-                                  <tr key={dl.id} className="border-b border-slate-100">
-                                    <td className="py-2 px-2 text-slate-500">{dl.date}</td>
-                                    <td className="py-2 px-2 font-bold">{dl.type === 'sell' ? 'فروش:' : 'خرید:'} {dl.item}</td>
-                                    <td className="py-2 px-2">{dl.weight} گ</td>
-                                    <td className="py-2 px-2 font-extrabold">{formatNum(dl.totalAmount)}</td>
-                                    <td className="py-2 px-2 text-emerald-700 font-bold">{formatNum(dl.paidAmount)}</td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setModal({ type: 'addDeal', customerId: selectedCust.id })}
+                            className="text-xs bg-amber-500 text-slate-950 px-3 py-1.5 rounded-xl font-bold"
+                          >
+                            + ثبت معامله
+                          </button>
+                          <button
+                            onClick={() => openCustomerInvoice(selectedCust)}
+                            className="text-xs bg-slate-800 text-white px-3 py-1.5 rounded-xl font-bold"
+                          >
+                            📄 فاکتور PDF
+                          </button>
+                        </div>
+                      </div>
+                      <div className="mt-3 space-y-2">
+                        {(selectedCust.deals || []).map(dl => (
+                          <div key={dl.id} className="p-3 rounded-xl bg-[#0b101b] border border-slate-800 text-xs flex justify-between">
+                            <div>
+                              <div className="font-bold text-slate-200">{dl.type === 'sell' ? 'فروش:' : 'خرید:'} {dl.item} ({dl.weight} گرم)</div>
+                              <div className="text-[10px] text-slate-500">{dl.date}</div>
+                            </div>
+                            <div className="text-left">
+                              <div className="font-extrabold text-amber-400">{formatNum(dl.totalAmount)} ت</div>
+                              <div className="text-[10px] text-emerald-400">پرداختی: {formatNum(dl.paidAmount)}</div>
+                            </div>
                           </div>
-                        )}
-                      </>
-                    )}
-                  </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })()}
-          </main>
+          </div>
 
+          {/* نوار ناوبری ثابت پایین صفحه دقیقاً مشابه تصویر */}
+          <nav className="fixed bottom-0 inset-x-0 bg-[#0d1320]/95 backdrop-blur-lg border-t border-slate-800/90 z-40 px-2 py-2">
+            <div className="max-w-3xl mx-auto flex items-center justify-around gap-1">
+              {navItems.map((nav) => {
+                const active = activeTab === nav.id;
+                return (
+                  <button
+                    key={nav.id}
+                    onClick={() => setActiveTab(nav.id)}
+                    className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition ${
+                      active ? 'text-emerald-400' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <Icon name={nav.icon} className="w-5 h-5 mb-1" />
+                    <span className="text-[10px] font-bold">{nav.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </nav>
+
+          {/* مودال‌های فرم */}
           {modal && (
             <ModalManager
               modal={modal}
@@ -1061,13 +936,14 @@
             />
           )}
 
+          {/* مودال فاکتور PDF */}
           {invoiceData && (
-            <div className="fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4 overflow-y-auto">
-              <div className="bg-white rounded-2xl max-w-3xl w-full p-5 shadow-2xl">
+            <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 overflow-y-auto">
+              <div className="bg-white text-slate-900 rounded-2xl max-w-3xl w-full p-5 shadow-2xl">
                 <div className="no-print flex items-center justify-between pb-3 mb-4 border-b">
                   <span className="text-xs font-bold text-slate-600">پیش‌نمایش فاکتور رسمی</span>
                   <div className="flex gap-2">
-                    <button onClick={() => window.print()} className="bg-amber-500 text-slate-950 text-xs font-bold px-3.5 py-2 rounded-xl">
+                    <button onClick={() => window.print()} className="bg-emerald-600 text-white text-xs font-bold px-3.5 py-2 rounded-xl">
                       🖨️ چاپ / ذخیره PDF
                     </button>
                     <button onClick={() => setInvoiceData(null)} className="bg-slate-200 text-slate-700 text-xs px-3 py-2 rounded-xl font-bold">
@@ -1075,56 +951,46 @@
                     </button>
                   </div>
                 </div>
-
                 <div id="printable-invoice" className="border-2 border-slate-800 rounded-xl p-5">
                   <div className="flex items-start justify-between border-b-2 border-slate-800 pb-3 mb-4">
                     <div>
-                      <h2 className="text-base font-black text-slate-900">{invoiceData.title}</h2>
+                      <h2 className="text-base font-black">{invoiceData.title}</h2>
                       <p className="text-xs text-slate-600 mt-1">{invoiceData.subtitle}</p>
                     </div>
-                    <div className="text-left text-xs space-y-1">
+                    <div className="text-left text-xs">
                       <div>شماره: <b>{invoiceData.docNo}</b></div>
                       <div>تاریخ: <b>{invoiceData.date}</b></div>
                     </div>
                   </div>
-
                   <table className="w-full text-right text-xs border-collapse mb-5">
                     <thead>
                       <tr className="bg-slate-100 border-y border-slate-400">
                         <th className="py-2 px-2">ردیف</th>
                         <th className="py-2 px-2">تاریخ</th>
                         <th className="py-2 px-2">شرح</th>
-                        <th className="py-2 px-2">نوع / فی</th>
+                        <th className="py-2 px-2">نوع</th>
                         <th className="py-2 px-2">مبلغ (تومان)</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {invoiceData.rows.length === 0 ? (
-                        <tr><td colSpan="5" className="text-center py-5 text-slate-400">موردی ثبت نشده است.</td></tr>
-                      ) : invoiceData.rows.map((r, i) => (
+                      {invoiceData.rows.map((r, i) => (
                         <tr key={i} className="border-b border-slate-200">
                           <td className="py-2 px-2">{i + 1}</td>
                           <td className="py-2 px-2">{r.date}</td>
                           <td className="py-2 px-2 font-bold">{r.desc}</td>
-                          <td className="py-2 px-2 text-slate-600">{r.meta}</td>
+                          <td className="py-2 px-2">{r.meta}</td>
                           <td className="py-2 px-2 font-extrabold">{formatNum(r.amount)}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
-
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-300 mb-6 text-xs">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-300 text-xs">
                     {invoiceData.summary.map((s, idx) => (
                       <div key={idx}>
                         <div className="text-slate-500">{s.label}</div>
-                        <div className="font-black text-slate-900 mt-0.5">{s.val}</div>
+                        <div className="font-black mt-0.5">{s.val}</div>
                       </div>
                     ))}
-                  </div>
-
-                  <div className="flex justify-between text-xs text-slate-500 pt-4 border-t border-dashed border-slate-300">
-                    <div>مهر و امضای صادرکننده</div>
-                    <div>امضای مشتری</div>
                   </div>
                 </div>
               </div>
@@ -1159,9 +1025,9 @@
           onClose();
         };
         return (
-          <div className="fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl">
-              <h3 className="font-bold text-base mb-3">تنظیم نرخ دستی تابلو طلای غفاری</h3>
+          <div className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+            <div className="bg-[#121927] border border-slate-700 text-white rounded-2xl max-w-lg w-full p-5 shadow-2xl">
+              <h3 className="font-bold text-base mb-3 text-amber-400">تنظیم نرخ دستی تابلو طلای غفاری</h3>
               <form onSubmit={handleSave} className="grid grid-cols-2 gap-2.5 text-xs">
                 {[
                   ['gold18', 'طلای ۱۸ عیار (گرم)', data.rates.gold18],
@@ -1175,13 +1041,13 @@
                   ['try', 'لیر ترکیه', data.rates.try]
                 ].map(([name, label, val]) => (
                   <div key={name}>
-                    <label className="block text-slate-500 mb-1">{label}</label>
-                    <input name={name} type="number" defaultValue={val} className="w-full border border-slate-300 rounded-xl p-2" />
+                    <label className="block text-slate-400 mb-1">{label}</label>
+                    <input name={name} type="number" defaultValue={val} className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2 text-white" />
                   </div>
                 ))}
                 <div className="col-span-2 flex justify-end gap-2 mt-2">
-                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl border">انصراف</button>
-                  <button type="submit" className="px-4 py-2 rounded-xl bg-amber-600 text-white font-bold">ذخیره نرخ‌ها</button>
+                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl bg-slate-800">انصراف</button>
+                  <button type="submit" className="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold">ذخیره</button>
                 </div>
               </form>
             </div>
@@ -1206,35 +1072,26 @@
           onClose();
         };
         return (
-          <div className="fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl">
+          <div className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+            <div className="bg-[#121927] border border-slate-700 text-white rounded-2xl max-w-md w-full p-5 shadow-2xl">
               <h3 className="font-bold text-base mb-3">افزودن حساب بانکی یا صندوق</h3>
               <form onSubmit={handleSave} className="space-y-3 text-xs">
                 <div>
-                  <label className="block text-slate-500 mb-1">بخش مربوطه</label>
-                  <select name="workspace" defaultValue={defaultWs} className="w-full border border-slate-300 rounded-xl p-2.5">
-                    {['hideaway', 'ghaffari_gold', 'nuance', 'home', 'personal'].map(id => (
+                  <label className="block text-slate-400 mb-1">بخش</label>
+                  <select name="workspace" defaultValue={defaultWs} className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5">
+                    {['hideaway', 'nuance', 'ghaffari_gold', 'home', 'personal'].map(id => (
                       <option key={id} value={id}>{WORKSPACES[id].name}</option>
                     ))}
                   </select>
                 </div>
-                <div>
-                  <label className="block text-slate-500 mb-1">نام حساب / صندوق</label>
-                  <input name="name" required className="w-full border border-slate-300 rounded-xl p-2.5" placeholder="مثلاً: کارت POS کافه یا حساب شخصی" />
-                </div>
+                <div><label className="block text-slate-400 mb-1">عنوان حساب</label><input name="name" required className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" /></div>
                 <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-slate-500 mb-1">نام بانک</label>
-                    <input name="bank" className="w-full border border-slate-300 rounded-xl p-2.5" placeholder="ملت / سامان / نقد" />
-                  </div>
-                  <div>
-                    <label className="block text-slate-500 mb-1">موجودی اولیه (تومان)</label>
-                    <input name="balance" type="number" defaultValue={0} className="w-full border border-slate-300 rounded-xl p-2.5" />
-                  </div>
+                  <div><label className="block text-slate-400 mb-1">نام بانک</label><input name="bank" className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" /></div>
+                  <div><label className="block text-slate-400 mb-1">موجودی اولیه</label><input name="balance" type="number" defaultValue={0} className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" /></div>
                 </div>
                 <div className="flex justify-end gap-2 pt-2">
-                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl border">انصراف</button>
-                  <button type="submit" className="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold">ذخیره حساب</button>
+                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl bg-slate-800">انصراف</button>
+                  <button type="submit" className="px-4 py-2 rounded-xl bg-emerald-600 font-bold">ذخیره</button>
                 </div>
               </form>
             </div>
@@ -1246,7 +1103,6 @@
         const [selWs, setSelWs] = useState(defaultWs);
         const [txType, setTxType] = useState('expense');
         const currentCats = WORKSPACES[selWs]?.categories[txType] || [];
-
         const handleSave = (e) => {
           e.preventDefault();
           const fd = new FormData(e.target);
@@ -1271,59 +1127,49 @@
           }));
           onClose();
         };
-
         return (
-          <div className="fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl">
-              <h3 className="font-bold text-base mb-3">ثبت درآمد یا هزینه جدید</h3>
+          <div className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+            <div className="bg-[#121927] border border-slate-700 text-white rounded-2xl max-w-md w-full p-5 shadow-2xl">
+              <h3 className="font-bold text-base mb-3">ثبت تراکنش جدید</h3>
               <form onSubmit={handleSave} className="space-y-3 text-xs">
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-slate-500 mb-1">بخش</label>
-                    <select value={selWs} onChange={e => setSelWs(e.target.value)} className="w-full border border-slate-300 rounded-xl p-2.5">
-                      {['hideaway', 'ghaffari_gold', 'nuance', 'home', 'personal'].map(id => (
+                    <label className="block text-slate-400 mb-1">بخش</label>
+                    <select value={selWs} onChange={e => setSelWs(e.target.value)} className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5">
+                      {['hideaway', 'nuance', 'ghaffari_gold', 'home', 'personal'].map(id => (
                         <option key={id} value={id}>{WORKSPACES[id].name}</option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-slate-500 mb-1">نوع</label>
-                    <select value={txType} onChange={e => setTxType(e.target.value)} className="w-full border border-slate-300 rounded-xl p-2.5">
+                    <label className="block text-slate-400 mb-1">نوع</label>
+                    <select value={txType} onChange={e => setTxType(e.target.value)} className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5">
                       <option value="expense">هزینه (-)</option>
                       <option value="income">درآمد (+)</option>
                     </select>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-slate-500 mb-1">دسته‌بندی</label>
-                  <select name="category" className="w-full border border-slate-300 rounded-xl p-2.5">
+                  <label className="block text-slate-400 mb-1">دسته‌بندی</label>
+                  <select name="category" className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5">
                     {currentCats.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
+                  <div><label className="block text-slate-400 mb-1">مبلغ (تومان)</label><input name="amount" type="number" required className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" /></div>
                   <div>
-                    <label className="block text-slate-500 mb-1">مبلغ (تومان)</label>
-                    <input name="amount" type="number" required className="w-full border border-slate-300 rounded-xl p-2.5" />
-                  </div>
-                  <div>
-                    <label className="block text-slate-500 mb-1">حساب / صندوق</label>
-                    <select name="accountId" className="w-full border border-slate-300 rounded-xl p-2.5">
-                      <option value="">بدون اتصال به حساب</option>
+                    <label className="block text-slate-400 mb-1">حساب</label>
+                    <select name="accountId" className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5">
+                      <option value="">بدون حساب</option>
                       {data.accounts.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                     </select>
                   </div>
                 </div>
-                <div>
-                  <label className="block text-slate-500 mb-1">تاریخ</label>
-                  <input name="date" defaultValue={todayJalali()} className="w-full border border-slate-300 rounded-xl p-2.5" />
-                </div>
-                <div>
-                  <label className="block text-slate-500 mb-1">توضیحات</label>
-                  <input name="note" className="w-full border border-slate-300 rounded-xl p-2.5" />
-                </div>
+                <div><label className="block text-slate-400 mb-1">تاریخ</label><input name="date" defaultValue={todayJalali()} className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" /></div>
+                <div><label className="block text-slate-400 mb-1">توضیحات</label><input name="note" className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" /></div>
                 <div className="flex justify-end gap-2 pt-2">
-                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl border">انصراف</button>
-                  <button type="submit" className="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold">ثبت تراکنش</button>
+                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl bg-slate-800">انصراف</button>
+                  <button type="submit" className="px-4 py-2 rounded-xl bg-emerald-600 font-bold">ثبت</button>
                 </div>
               </form>
             </div>
@@ -1331,293 +1177,123 @@
         );
       }
 
-      if (modal.type === 'addDebt') {
-        const handleSave = (e) => {
+      if (modal.type === 'addDebt' || modal.type === 'addTask' || modal.type === 'addGoal' || modal.type === 'progressGoal' || modal.type === 'addCustomer' || modal.type === 'addDeal') {
+        const handleSimple = (e) => {
           e.preventDefault();
           const fd = new FormData(e.target);
-          setData(d => ({
-            ...d,
-            debts: [{
-              id: uid('dbt'),
-              workspace: fd.get('workspace'),
-              kind: fd.get('kind'),
-              title: fd.get('title'),
-              person: fd.get('person'),
-              amount: Number(fd.get('amount') || 0),
-              dueDate: fd.get('dueDate'),
-              status: 'pending'
-            }, ...d.debts]
-          }));
+          if (modal.type === 'addDebt') {
+            setData(d => ({ ...d, debts: [{ id: uid('dbt'), workspace: fd.get('workspace'), kind: fd.get('kind'), title: fd.get('title'), person: fd.get('person'), amount: Number(fd.get('amount') || 0), dueDate: fd.get('dueDate'), status: 'pending' }, ...d.debts] }));
+          } else if (modal.type === 'addTask') {
+            setData(d => ({ ...d, tasks: [{ id: uid('tsk'), workspace: fd.get('workspace'), title: fd.get('title'), priority: 'urgent', dueDate: fd.get('dueDate'), done: false }, ...d.tasks] }));
+          } else if (modal.type === 'addGoal') {
+            setData(d => ({ ...d, goals: [{ id: uid('gl'), workspace: fd.get('workspace'), title: fd.get('title'), target: Number(fd.get('target') || 0), current: Number(fd.get('current') || 0), unit: fd.get('unit') || 'تومان', deadline: fd.get('deadline') }, ...d.goals] }));
+          } else if (modal.type === 'progressGoal') {
+            const delta = Number(fd.get('delta') || 0);
+            setData(d => ({ ...d, goals: d.goals.map(g => g.id === modal.goalId ? { ...g, current: Number(g.current || 0) + delta } : g) }));
+          } else if (modal.type === 'addCustomer') {
+            const id = uid('cust');
+            setData(d => ({ ...d, customers: [{ id, workspace: activeWs, name: fd.get('name'), phone: fd.get('phone'), nationalId: fd.get('nationalId'), deals: [] }, ...d.customers] }));
+            setSelectedCustomerId(id);
+          } else if (modal.type === 'addDeal') {
+            const w = Number(fd.get('weight') || 0);
+            const r = Number(fd.get('rate') || 0);
+            const wp = Number(fd.get('wagePercent') || 0);
+            const totalAmount = Math.round(w * r * (1 + wp / 100));
+            setData(d => ({
+              ...d,
+              customers: d.customers.map(c => c.id === modal.customerId ? {
+                ...c,
+                deals: [{ id: uid('dl'), date: fd.get('date'), type: fd.get('type'), item: fd.get('item'), weight: w, purity: '750', rate: r, wagePercent: wp, totalAmount, paidAmount: Number(fd.get('paidAmount') || 0) }, ...(c.deals || [])]
+              } : c)
+            }));
+          }
           onClose();
         };
+
         return (
-          <div className="fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl">
-              <h3 className="font-bold text-base mb-3">ثبت قسط، چک، بدهی یا طلب</h3>
-              <form onSubmit={handleSave} className="space-y-3 text-xs">
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-slate-500 mb-1">بخش</label>
-                    <select name="workspace" defaultValue={defaultWs} className="w-full border rounded-xl p-2.5">
-                      {['hideaway', 'ghaffari_gold', 'nuance', 'home', 'personal'].map(id => <option key={id} value={id}>{WORKSPACES[id].name}</option>)}
+          <div className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+            <div className="bg-[#121927] border border-slate-700 text-white rounded-2xl max-w-md w-full p-5 shadow-2xl">
+              <form onSubmit={handleSimple} className="space-y-3 text-xs">
+                {modal.type === 'addDebt' && (
+                  <>
+                    <h3 className="font-bold text-base mb-2">ثبت قسط / چک / بدهی</h3>
+                    <select name="workspace" defaultValue={defaultWs} className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5">
+                      {['hideaway', 'nuance', 'ghaffari_gold', 'home', 'personal'].map(id => <option key={id} value={id}>{WORKSPACES[id].name}</option>)}
                     </select>
-                  </div>
-                  <div>
-                    <label className="block text-slate-500 mb-1">نوع</label>
-                    <select name="kind" className="w-full border rounded-xl p-2.5">
-                      <option value="installment">قسط</option>
-                      <option value="check">چک</option>
-                      <option value="debt">بدهی</option>
-                      <option value="receivable">طلب</option>
+                    <select name="kind" className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5">
+                      <option value="installment">قسط</option><option value="check">چک</option><option value="debt">بدهی</option><option value="receivable">طلب</option>
                     </select>
-                  </div>
-                </div>
-                <div><label className="block text-slate-500 mb-1">عنوان</label><input name="title" required className="w-full border rounded-xl p-2.5" /></div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div><label className="block text-slate-500 mb-1">طرف حساب</label><input name="person" className="w-full border rounded-xl p-2.5" /></div>
-                  <div><label className="block text-slate-500 mb-1">مبلغ (تومان)</label><input name="amount" type="number" required className="w-full border rounded-xl p-2.5" /></div>
-                </div>
-                <div><label className="block text-slate-500 mb-1">تاریخ سررسید</label><input name="dueDate" defaultValue={todayJalali()} className="w-full border rounded-xl p-2.5" /></div>
-                <div className="flex justify-end gap-2 pt-2">
-                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl border">انصراف</button>
-                  <button type="submit" className="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold">ثبت</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        );
-      }
-
-      if (modal.type === 'addTask') {
-        const handleSave = (e) => {
-          e.preventDefault();
-          const fd = new FormData(e.target);
-          setData(d => ({
-            ...d,
-            tasks: [{
-              id: uid('tsk'),
-              workspace: fd.get('workspace'),
-              title: fd.get('title'),
-              priority: fd.get('priority'),
-              dueDate: fd.get('dueDate'),
-              done: false
-            }, ...d.tasks]
-          }));
-          onClose();
-        };
-        return (
-          <div className="fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl">
-              <h3 className="font-bold text-base mb-3">افزودن کار جدید</h3>
-              <form onSubmit={handleSave} className="space-y-3 text-xs">
-                <div>
-                  <label className="block text-slate-500 mb-1">بخش</label>
-                  <select name="workspace" defaultValue={defaultWs} className="w-full border rounded-xl p-2.5">
-                    {['hideaway', 'ghaffari_gold', 'nuance', 'home', 'personal'].map(id => <option key={id} value={id}>{WORKSPACES[id].name}</option>)}
-                  </select>
-                </div>
-                <div><label className="block text-slate-500 mb-1">عنوان کار</label><input name="title" required className="w-full border rounded-xl p-2.5" /></div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-slate-500 mb-1">اولویت</label>
-                    <select name="priority" className="w-full border rounded-xl p-2.5">
-                      <option value="urgent">فوری</option>
-                      <option value="important">مهم</option>
-                      <option value="normal">عادی</option>
+                    <input name="title" required placeholder="عنوان..." className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                    <input name="amount" type="number" required placeholder="مبلغ (تومان)" className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                    <input name="dueDate" defaultValue={todayJalali()} className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                  </>
+                )}
+                {modal.type === 'addTask' && (
+                  <>
+                    <h3 className="font-bold text-base mb-2">کار جدید</h3>
+                    <select name="workspace" defaultValue={defaultWs} className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5">
+                      {['hideaway', 'nuance', 'ghaffari_gold', 'home', 'personal'].map(id => <option key={id} value={id}>{WORKSPACES[id].name}</option>)}
                     </select>
-                  </div>
-                  <div><label className="block text-slate-500 mb-1">تاریخ انجام</label><input name="dueDate" defaultValue={todayJalali()} className="w-full border rounded-xl p-2.5" /></div>
-                </div>
-                <div className="flex justify-end gap-2 pt-2">
-                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl border">انصراف</button>
-                  <button type="submit" className="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold">ذخیره کار</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        );
-      }
-
-      if (modal.type === 'addGoal') {
-        const handleSave = (e) => {
-          e.preventDefault();
-          const fd = new FormData(e.target);
-          setData(d => ({
-            ...d,
-            goals: [{
-              id: uid('gl'),
-              workspace: fd.get('workspace'),
-              title: fd.get('title'),
-              target: Number(fd.get('target') || 0),
-              current: Number(fd.get('current') || 0),
-              unit: fd.get('unit') || 'تومان',
-              deadline: fd.get('deadline')
-            }, ...d.goals]
-          }));
-          onClose();
-        };
-        return (
-          <div className="fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl">
-              <h3 className="font-bold text-base mb-3">تعریف هدف زمان‌بندی‌شده</h3>
-              <form onSubmit={handleSave} className="space-y-3 text-xs">
-                <div>
-                  <label className="block text-slate-500 mb-1">بخش</label>
-                  <select name="workspace" defaultValue={defaultWs} className="w-full border rounded-xl p-2.5">
-                    {['hideaway', 'ghaffari_gold', 'nuance', 'home', 'personal'].map(id => <option key={id} value={id}>{WORKSPACES[id].name}</option>)}
-                  </select>
-                </div>
-                <div><label className="block text-slate-500 mb-1">عنوان هدف</label><input name="title" required className="w-full border rounded-xl p-2.5" /></div>
-                <div className="grid grid-cols-3 gap-2">
-                  <div><label className="block text-slate-500 mb-1">مقدار هدف</label><input name="target" type="number" required className="w-full border rounded-xl p-2.5" /></div>
-                  <div><label className="block text-slate-500 mb-1">فعلی</label><input name="current" type="number" defaultValue={0} className="w-full border rounded-xl p-2.5" /></div>
-                  <div><label className="block text-slate-500 mb-1">واحد</label><input name="unit" defaultValue="تومان" className="w-full border rounded-xl p-2.5" /></div>
-                </div>
-                <div><label className="block text-slate-500 mb-1">مهلت زمانی</label><input name="deadline" defaultValue="1405/12/29" className="w-full border rounded-xl p-2.5" /></div>
-                <div className="flex justify-end gap-2 pt-2">
-                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl border">انصراف</button>
-                  <button type="submit" className="px-4 py-2 rounded-xl bg-amber-600 text-white font-bold">ثبت هدف</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        );
-      }
-
-      if (modal.type === 'progressGoal') {
-        const handleSave = (e) => {
-          e.preventDefault();
-          const delta = Number(new FormData(e.target).get('delta') || 0);
-          setData(d => ({
-            ...d,
-            goals: d.goals.map(g => g.id === modal.goalId ? { ...g, current: Number(g.current || 0) + delta } : g)
-          }));
-          onClose();
-        };
-        return (
-          <div className="fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl">
-              <h3 className="font-bold text-sm mb-3">افزودن پیشرفت جدید</h3>
-              <form onSubmit={handleSave} className="space-y-3 text-xs">
-                <input name="delta" type="number" required placeholder="مقدار پیشرفت جدید..." className="w-full border rounded-xl p-2.5" />
-                <div className="flex justify-end gap-2">
-                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl border">انصراف</button>
-                  <button type="submit" className="px-4 py-2 rounded-xl bg-emerald-600 text-white font-bold">ثبت</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        );
-      }
-
-      if (modal.type === 'addCustomer') {
-        const handleSave = (e) => {
-          e.preventDefault();
-          const fd = new FormData(e.target);
-          const id = uid('cust');
-          setData(d => ({
-            ...d,
-            customers: [{
-              id,
-              workspace: activeWs,
-              name: fd.get('name'),
-              phone: fd.get('phone'),
-              nationalId: fd.get('nationalId'),
-              address: fd.get('address'),
-              deals: []
-            }, ...d.customers]
-          }));
-          setSelectedCustomerId(id);
-          onClose();
-        };
-        return (
-          <div className="fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl">
-              <h3 className="font-bold text-base mb-3">ثبت مشتری جدید ({ws.name})</h3>
-              <form onSubmit={handleSave} className="space-y-3 text-xs">
-                <div><label className="block text-slate-500 mb-1">نام و نام خانوادگی</label><input name="name" required className="w-full border rounded-xl p-2.5" /></div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div><label className="block text-slate-500 mb-1">تلفن</label><input name="phone" className="w-full border rounded-xl p-2.5" /></div>
-                  <div><label className="block text-slate-500 mb-1">کد ملی</label><input name="nationalId" className="w-full border rounded-xl p-2.5" /></div>
-                </div>
-                <div><label className="block text-slate-500 mb-1">آدرس</label><input name="address" className="w-full border rounded-xl p-2.5" /></div>
-                <div className="flex justify-end gap-2 pt-2">
-                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl border">انصراف</button>
-                  <button type="submit" className="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold">ذخیره مشتری</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        );
-      }
-
-      if (modal.type === 'addDeal') {
-        const handleSave = (e) => {
-          e.preventDefault();
-          const fd = new FormData(e.target);
-          const weight = Number(fd.get('weight') || 0);
-          const rate = Number(fd.get('rate') || 0);
-          const wagePercent = Number(fd.get('wagePercent') || 0);
-          const raw = weight * rate;
-          const totalAmount = Math.round(raw + (raw * (wagePercent / 100)));
-
-          setData(d => ({
-            ...d,
-            customers: d.customers.map(c => c.id === modal.customerId ? {
-              ...c,
-              deals: [{
-                id: uid('dl'),
-                date: fd.get('date'),
-                type: fd.get('type'),
-                item: fd.get('item'),
-                weight,
-                purity: fd.get('purity'),
-                rate,
-                wagePercent,
-                totalAmount,
-                paidAmount: Number(fd.get('paidAmount') || 0),
-                note: fd.get('note')
-              }, ...(c.deals || [])]
-            } : c)
-          }));
-          onClose();
-        };
-        return (
-          <div className="fixed inset-0 bg-slate-950/60 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl">
-              <h3 className="font-bold text-base mb-3">ثبت معامله طلا</h3>
-              <form onSubmit={handleSave} className="space-y-3 text-xs">
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-slate-500 mb-1">نوع معامله</label>
-                    <select name="type" className="w-full border rounded-xl p-2.5">
-                      <option value="sell">فروش به مشتری</option>
-                      <option value="buy">خرید از مشتری</option>
+                    <input name="title" required placeholder="شرح کار..." className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                    <input name="dueDate" defaultValue={todayJalali()} className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                  </>
+                )}
+                {modal.type === 'addGoal' && (
+                  <>
+                    <h3 className="font-bold text-base mb-2">تعریف هدف جدید</h3>
+                    <select name="workspace" defaultValue={defaultWs} className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5">
+                      {['hideaway', 'nuance', 'ghaffari_gold', 'home', 'personal'].map(id => <option key={id} value={id}>{WORKSPACES[id].name}</option>)}
                     </select>
-                  </div>
-                  <div><label className="block text-slate-500 mb-1">تاریخ</label><input name="date" defaultValue={todayJalali()} className="w-full border rounded-xl p-2.5" /></div>
-                </div>
-                <div><label className="block text-slate-500 mb-1">شرح قطعه طلا</label><input name="item" required className="w-full border rounded-xl p-2.5" /></div>
-                <div className="grid grid-cols-3 gap-2">
-                  <div><label className="block text-slate-500 mb-1">وزن (گرم)</label><input name="weight" type="number" step="0.01" required className="w-full border rounded-xl p-2.5" /></div>
-                  <div><label className="block text-slate-500 mb-1">عیار</label><input name="purity" defaultValue="750" className="w-full border rounded-xl p-2.5" /></div>
-                  <div><label className="block text-slate-500 mb-1">اجرت (%)</label><input name="wagePercent" type="number" defaultValue="10" className="w-full border rounded-xl p-2.5" /></div>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div><label className="block text-slate-500 mb-1">نرخ هر گرم (تومان)</label><input name="rate" type="number" defaultValue={data.rates.gold18 || 0} required className="w-full border rounded-xl p-2.5" /></div>
-                  <div><label className="block text-slate-500 mb-1">مبلغ پرداختی (تومان)</label><input name="paidAmount" type="number" required className="w-full border rounded-xl p-2.5" /></div>
-                </div>
-                <div><label className="block text-slate-500 mb-1">توضیحات</label><input name="note" className="w-full border rounded-xl p-2.5" /></div>
+                    <input name="title" required placeholder="عنوان هدف..." className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                    <div className="grid grid-cols-3 gap-2">
+                      <input name="target" type="number" required placeholder="هدف" className="bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                      <input name="current" type="number" defaultValue={0} placeholder="فعلی" className="bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                      <input name="unit" defaultValue="تومان" className="bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                    </div>
+                    <input name="deadline" defaultValue="1405/12/29" className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                  </>
+                )}
+                {modal.type === 'progressGoal' && (
+                  <>
+                    <h3 className="font-bold text-base mb-2">ثبت پیشرفت جدید</h3>
+                    <input name="delta" type="number" required placeholder="مقدار پیشرفت..." className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                  </>
+                )}
+                {modal.type === 'addCustomer' && (
+                  <>
+                    <h3 className="font-bold text-base mb-2">مشتری جدید ({ws.name})</h3>
+                    <input name="name" required placeholder="نام و نام خانوادگی" className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                    <input name="phone" placeholder="شماره تماس" className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                    <input name="nationalId" placeholder="کد ملی" className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                  </>
+                )}
+                {modal.type === 'addDeal' && (
+                  <>
+                    <h3 className="font-bold text-base mb-2">ثبت معامله طلا</h3>
+                    <select name="type" className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5">
+                      <option value="sell">فروش به مشتری</option><option value="buy">خرید از مشتری</option>
+                    </select>
+                    <input name="item" required placeholder="شرح قطعه طلا" className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                    <div className="grid grid-cols-2 gap-2">
+                      <input name="weight" type="number" step="0.01" required placeholder="وزن (گرم)" className="bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                      <input name="wagePercent" type="number" defaultValue={10} placeholder="اجرت (%)" className="bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <input name="rate" type="number" defaultValue={data.rates.gold18 || 0} required placeholder="نرخ هر گرم" className="bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                      <input name="paidAmount" type="number" required placeholder="مبلغ پرداختی" className="bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                    </div>
+                    <input name="date" defaultValue={todayJalali()} className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5" />
+                  </>
+                )}
                 <div className="flex justify-end gap-2 pt-2">
-                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl border">انصراف</button>
-                  <button type="submit" className="px-4 py-2 rounded-xl bg-amber-600 text-white font-bold">ثبت معامله</button>
+                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl bg-slate-800">انصراف</button>
+                  <button type="submit" className="px-4 py-2 rounded-xl bg-emerald-600 font-bold">ذخیره</button>
                 </div>
               </form>
             </div>
           </div>
         );
       }
-
       return null;
     }
 
