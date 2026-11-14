@@ -165,6 +165,13 @@
     };
 
     const STORAGE_KEY = 'behzad_dark_v6_zero_data';
+    const AUTH_KEY = 'behzad_admin_credentials_v1';
+    const SESSION_KEY = 'behzad_admin_logged_in_v1';
+
+    const DEFAULT_AUTH = {
+      username: 'admin',
+      password: '1234'
+    };
 
     const EMPTY_STATE = {
       rates: {
@@ -194,6 +201,29 @@
     };
 
     function App() {
+      const [authCreds, setAuthCreds] = useState(() => {
+        try {
+          const saved = localStorage.getItem(AUTH_KEY);
+          return saved ? JSON.parse(saved) : DEFAULT_AUTH;
+        } catch {
+          return DEFAULT_AUTH;
+        }
+      });
+
+      const [isAuthenticated, setIsAuthenticated] = useState(() => {
+        try {
+          return sessionStorage.getItem(SESSION_KEY) === 'true' || localStorage.getItem(SESSION_KEY) === 'true';
+        } catch {
+          return false;
+        }
+      });
+
+      const [loginUser, setLoginUser] = useState('');
+      const [loginPass, setLoginPass] = useState('');
+      const [rememberMe, setRememberMe] = useState(true);
+      const [showPass, setShowPass] = useState(false);
+      const [loginError, setLoginError] = useState('');
+
       const [data, setData] = useState(() => {
         try {
           const saved = localStorage.getItem(STORAGE_KEY);
@@ -225,6 +255,28 @@
           document.body.className = 'bg-slate-100 text-slate-900';
         }
       }, [darkMode]);
+
+      const handleLoginSubmit = (e) => {
+        e.preventDefault();
+        if (loginUser.trim() === authCreds.username && loginPass === authCreds.password) {
+          setIsAuthenticated(true);
+          setLoginError('');
+          sessionStorage.setItem(SESSION_KEY, 'true');
+          if (rememberMe) {
+            localStorage.setItem(SESSION_KEY, 'true');
+          }
+        } else {
+          setLoginError('نام کاربری یا رمز عبور اشتباه است.');
+        }
+      };
+
+      const handleLogout = () => {
+        setIsAuthenticated(false);
+        setLoginUser('');
+        setLoginPass('');
+        sessionStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem(SESSION_KEY);
+      };
 
       const ws = WORKSPACES[activeWs] || WORKSPACES.all;
 
@@ -326,6 +378,90 @@
         });
       };
 
+      // ==========================================
+      // صفحه ورود ادمین (Login Screen)
+      // ==========================================
+      if (!isAuthenticated) {
+        return (
+          <div className="min-h-screen bg-[#090d16] text-slate-100 flex items-center justify-center p-4">
+            <div className="w-full max-w-md bg-[#121927] border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl">
+              <div className="flex flex-col items-center text-center mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-900/40 mb-4">
+                  <Icon name="shield-check" className="w-8 h-8 text-white" />
+                </div>
+                <h1 className="text-xl font-black text-white">ورود به پنل مدیریت</h1>
+                <p className="text-xs text-slate-400 mt-1">Hideaway • Nuance • طلای غفاری</p>
+              </div>
+
+              <form onSubmit={handleLoginSubmit} className="space-y-4 text-xs">
+                <div>
+                  <label className="block text-slate-400 mb-1.5 font-medium">نام کاربری</label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={loginUser}
+                      onChange={(e) => setLoginUser(e.target.value)}
+                      required
+                      dir="ltr"
+                      placeholder="admin"
+                      className="w-full bg-[#0b101b] border border-slate-700 focus:border-emerald-500 outline-none rounded-xl px-4 py-3 text-left text-white text-sm transition"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1.5 font-medium">رمز عبور</label>
+                  <div className="relative">
+                    <input
+                      type={showPass ? 'text' : 'password'}
+                      value={loginPass}
+                      onChange={(e) => setLoginPass(e.target.value)}
+                      required
+                      dir="ltr"
+                      placeholder="••••"
+                      className="w-full bg-[#0b101b] border border-slate-700 focus:border-emerald-500 outline-none rounded-xl px-4 py-3 pl-10 text-left text-white text-sm transition"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPass(!showPass)}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                    >
+                      <Icon name={showPass ? 'eye-off' : 'eye'} className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-1">
+                  <label className="flex items-center gap-2 cursor-pointer text-slate-400">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="w-4 h-4 rounded accent-emerald-500"
+                    />
+                    <span>مرا به خاطر بسپار</span>
+                  </label>
+                  <span className="text-[11px] text-slate-500">پیش‌فرض: admin / 1234</span>
+                </div>
+
+                {loginError && (
+                  <div className="bg-rose-500/15 border border-rose-500/40 text-rose-300 px-3.5 py-2.5 rounded-xl text-xs font-medium text-center">
+                    {loginError}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-l from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3.5 rounded-xl shadow-lg shadow-emerald-950/50 transition text-sm mt-2"
+                >
+                  ورود به داشبورد
+                </button>
+              </form>
+            </div>
+          </div>
+        );
+      }
+
       const navItems = [
         { id: 'overview', label: 'نمای کلی', icon: 'layout-grid' },
         { id: 'accounting', label: 'حسابداری', icon: 'arrow-left-right' },
@@ -342,7 +478,7 @@
         <div className="min-h-screen pb-24 transition-colors duration-200">
           <div className="max-w-5xl mx-auto px-3.5 pt-3.5 space-y-4">
 
-            {/* ردیف بالای انتخاب فضاهای کاری دقیقاً شبیه اسکرین‌شات */}
+            {/* ردیف بالای انتخاب فضاهای کاری */}
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
               {Object.values(WORKSPACES).map((item) => {
                 const active = activeWs === item.id;
@@ -363,7 +499,7 @@
               })}
             </div>
 
-            {/* بنر بزرگ رنگی اصلی دقیقاً مطابق تصویر */}
+            {/* بنر بزرگ رنگی اصلی */}
             <div className={`bg-gradient-to-l ${ws.bannerGradient} rounded-3xl p-5 text-white shadow-xl relative overflow-hidden`}>
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3.5">
@@ -431,6 +567,22 @@
                   <Icon name="upload" className="w-4 h-4" />
                   <input type="file" accept=".json" onChange={importJSON} className="hidden" />
                 </label>
+
+                <button
+                  onClick={() => setModal({ type: 'changePassword' })}
+                  className="p-2.5 bg-black/25 hover:bg-black/35 border border-white/15 text-amber-300 rounded-xl transition"
+                  title="تغییر نام کاربری و رمز عبور ادمین"
+                >
+                  <Icon name="key-round" className="w-4 h-4" />
+                </button>
+
+                <button
+                  onClick={handleLogout}
+                  className="p-2.5 bg-rose-500/30 hover:bg-rose-500/50 border border-rose-400/30 text-white rounded-xl transition"
+                  title="خروج و قفل کردن پنل"
+                >
+                  <Icon name="log-out" className="w-4 h-4" />
+                </button>
               </div>
             </div>
 
@@ -493,7 +645,6 @@
             {/* ================= تب ۱: نمای کلی ================= */}
             {activeTab === 'overview' && (
               <div className="space-y-3.5">
-                {/* کارت‌های آماری تیره دقیقاً مثل اسکرین‌شات */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="bg-[#121927] dark:bg-[#121927] border border-slate-800/90 rounded-2xl p-4 flex items-center justify-between">
                     <div>
@@ -544,7 +695,6 @@
                   </div>
                 </div>
 
-                {/* دسترسی سریع به فضاهای کاری */}
                 {activeWs === 'all' && (
                   <div className="bg-[#121927] border border-slate-800/90 rounded-2xl p-4">
                     <h3 className="font-bold text-slate-200 text-xs mb-3">فضاهای کاری و شخصی</h3>
@@ -574,7 +724,6 @@
                   </div>
                 )}
 
-                {/* آخرین تراکنش‌ها */}
                 <div className="bg-[#121927] border border-slate-800/90 rounded-2xl p-4">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-bold text-slate-200 text-xs">آخرین تراکنش‌ها</h3>
@@ -902,7 +1051,7 @@
             })()}
           </div>
 
-          {/* نوار ناوبری ثابت پایین صفحه دقیقاً مشابه تصویر */}
+          {/* نوار ناوبری ثابت پایین صفحه */}
           <nav className="fixed bottom-0 inset-x-0 bg-[#0d1320]/95 backdrop-blur-lg border-t border-slate-800/90 z-40 px-2 py-2">
             <div className="max-w-3xl mx-auto flex items-center justify-around gap-1">
               {navItems.map((nav) => {
@@ -933,6 +1082,8 @@
               activeWs={activeWs}
               ws={ws}
               setSelectedCustomerId={setSelectedCustomerId}
+              authCreds={authCreds}
+              setAuthCreds={setAuthCreds}
             />
           )}
 
@@ -1000,8 +1151,46 @@
       );
     }
 
-    function ModalManager({ modal, onClose, data, setData, activeWs, ws, setSelectedCustomerId }) {
+    function ModalManager({ modal, onClose, data, setData, activeWs, ws, setSelectedCustomerId, authCreds, setAuthCreds }) {
       const defaultWs = activeWs === 'all' ? 'personal' : activeWs;
+
+      if (modal.type === 'changePassword') {
+        const handleSaveCreds = (e) => {
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          const newUser = fd.get('username').trim();
+          const newPass = fd.get('password');
+          if (!newUser || !newPass) return;
+          const updated = { username: newUser, password: newPass };
+          setAuthCreds(updated);
+          localStorage.setItem(AUTH_KEY, JSON.stringify(updated));
+          alert('نام کاربری و رمز عبور ادمین با موفقیت تغییر کرد!');
+          onClose();
+        };
+
+        return (
+          <div className="fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+            <div className="bg-[#121927] border border-slate-700 text-white rounded-2xl max-w-sm w-full p-5 shadow-2xl">
+              <h3 className="font-bold text-base mb-1 text-amber-400">تنظیمات امنیت و ورود ادمین</h3>
+              <p className="text-[11px] text-slate-400 mb-4">نام کاربری و رمز عبور جدید خود را وارد کنید</p>
+              <form onSubmit={handleSaveCreds} className="space-y-3 text-xs">
+                <div>
+                  <label className="block text-slate-400 mb-1">نام کاربری جدید</label>
+                  <input name="username" dir="ltr" defaultValue={authCreds.username} required className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5 text-left text-white" />
+                </div>
+                <div>
+                  <label className="block text-slate-400 mb-1">رمز عبور جدید</label>
+                  <input name="password" dir="ltr" defaultValue={authCreds.password} required className="w-full bg-[#0b101b] border border-slate-700 rounded-xl p-2.5 text-left text-white" />
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                  <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl bg-slate-800">انصراف</button>
+                  <button type="submit" className="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold">ذخیره تغییرات</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        );
+      }
 
       if (modal.type === 'editRates') {
         const handleSave = (e) => {
